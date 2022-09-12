@@ -11,7 +11,7 @@
     </p>
     <button
       class="btn btn-flex flex-center btn-bg-body btn-text-gray-500 btn-active-color-primary w-40px w-md-auto h-40px px-0 px-md-6"
-      @click="toggleFullscreen" v-if="!isFullscreen">Fullscreen
+      @click="toggleFullscreen" v-if="!isFullscreen">Go Fullscreen
     </button>
   </div>
 
