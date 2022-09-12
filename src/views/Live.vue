@@ -31,9 +31,10 @@
 </style>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { api as fullscreen } from "vue-fullscreen";
-import { mapGetters } from "vuex";
+import {defineComponent} from "vue";
+import {api as fullscreen} from "vue-fullscreen";
+import {mapState} from "pinia";
+import {useScriptureStore} from "@/stores/scriptureStore";
 
 export default defineComponent({
   name: "scripture-live",
@@ -44,11 +45,11 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapGetters(["currentVerse"]),
     cursor() {
       if (this.isFullscreen) return "none";
       return "auto";
-    }
+    },
+    ...mapState(useScriptureStore, ["currentVerse"]),
   },
   methods: {
     async toggleFullscreen() {
