@@ -16,14 +16,14 @@
           <!--begin::Illustration-->
           <div class="mb-11">
             <img
-              src="media/auth/500-error.png"
-              class="mw-100 mh-300px theme-light-show"
-              alt=""
+                src="media/auth/500-error.png"
+                class="mw-100 mh-300px theme-light-show"
+                alt=""
             />
             <img
-              src="media/auth/500-error-dark.png"
-              class="mw-100 mh-300px theme-dark-show"
-              alt=""
+                src="media/auth/500-error-dark.png"
+                class="mw-100 mh-300px theme-dark-show"
+                alt=""
             />
           </div>
           <!--end::Illustration-->
@@ -43,17 +43,18 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from "vue";
-import { useStore } from "vuex";
-import { Actions } from "@/store/enums/StoreEnums";
-import { getIllustrationsPath } from "@/core/helpers/assets";
+import {computed, defineComponent, onMounted} from "vue";
+import {useStore} from "vuex";
+import {getIllustrationsPath} from "@/core/helpers/assets";
 import LayoutService from "@/core/services/LayoutService";
+import {useBodyStore} from "@/stores/useBodyStore";
 
 export default defineComponent({
   name: "error-500",
   components: {},
   setup() {
     const store = useStore();
+    const bodyStore = useBodyStore();
     const themeMode = computed(() => {
       return store.getters.getThemeMode;
     });
@@ -62,8 +63,8 @@ export default defineComponent({
     onMounted(() => {
       LayoutService.emptyElementClassesAndAttributes(document.body);
 
-      store.dispatch(Actions.ADD_BODY_CLASSNAME, "bg-body");
-      store.dispatch(Actions.ADD_BODY_ATTRIBUTE, {
+      bodyStore.addBodyClassName("bg-body");
+      bodyStore.addBodyAttribute({
         qualifiedName: "style",
         value: `background-image: url("media/auth/${bgImage}")`
       });

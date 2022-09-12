@@ -1,21 +1,21 @@
 <template>
   <!--begin::Authentication - Multi-steps-->
   <div
-    class="d-flex flex-column flex-lg-row flex-column-fluid stepper stepper-pills stepper-column stepper-multistep first"
-    ref="wizardRef"
-    id="kt_create_account_stepper"
+      class="d-flex flex-column flex-lg-row flex-column-fluid stepper stepper-pills stepper-column stepper-multistep first"
+      ref="wizardRef"
+      id="kt_create_account_stepper"
   >
     <!--begin::Aside-->
     <div class="d-flex flex-column flex-lg-row-auto w-lg-350px w-xl-500px">
       <div
-        class="d-flex flex-column position-lg-fixed top-0 bottom-0 w-lg-350px w-xl-500px scroll-y bgi-size-cover bgi-position-center"
-        style="background-image: url(media/misc/auth-bg.png)"
+          class="d-flex flex-column position-lg-fixed top-0 bottom-0 w-lg-350px w-xl-500px scroll-y bgi-size-cover bgi-position-center"
+          style="background-image: url(media/misc/auth-bg.png)"
       >
         <!--begin::Header-->
         <div class="d-flex flex-center py-10 py-lg-20 mt-lg-20">
           <!--begin::Logo-->
           <router-link to="/">
-            <img alt="Logo" src="media/logos/custom-1.png" class="h-70px" />
+            <img alt="Logo" src="media/logos/custom-1.png" class="h-70px"/>
           </router-link>
           <!--end::Logo-->
         </div>
@@ -130,21 +130,21 @@
           <!--begin::Links-->
           <div class="d-flex fw-normal">
             <a
-              href="https://keenthemes.com"
-              class="text-success px-5"
-              target="_blank"
+                href="https://keenthemes.com"
+                class="text-success px-5"
+                target="_blank"
             >Terms</a
             >
             <a
-              href="https://devs.keenthemes.com"
-              class="text-success px-5"
-              target="_blank"
+                href="https://devs.keenthemes.com"
+                class="text-success px-5"
+                target="_blank"
             >Plans</a
             >
             <a
-              href="https://1.envato.market/EA4JP"
-              class="text-success px-5"
-              target="_blank"
+                href="https://1.envato.market/EA4JP"
+                class="text-success px-5"
+                target="_blank"
             >Contact Us</a
             >
           </div>
@@ -163,38 +163,38 @@
         <div class="w-lg-700px p-10 p-lg-15 mx-auto">
           <!--begin::Form-->
           <form
-            class="my-auto pb-5"
-            novalidate="novalidate"
-            id="kt_create_account_form"
-            @submit="handleStep"
+              class="my-auto pb-5"
+              novalidate="novalidate"
+              id="kt_create_account_form"
+              @submit="handleStep"
           >
             <!--begin::Step 1-->
             <div class="current" data-kt-stepper-element="content">
-              <Step1 />
+              <Step1/>
             </div>
             <!--end::Step 1-->
 
             <!--begin::Step 2-->
             <div class="" data-kt-stepper-element="content">
-              <Step2 />
+              <Step2/>
             </div>
             <!--end::Step 2-->
 
             <!--begin::Step 3-->
             <div class="" data-kt-stepper-element="content">
-              <Step3 />
+              <Step3/>
             </div>
             <!--end::Step 3-->
 
             <!--begin::Step 4-->
             <div class="" data-kt-stepper-element="content">
-              <Step4 />
+              <Step4/>
             </div>
             <!--end::Step 4-->
 
             <!--begin::Step 5-->
             <div class="" data-kt-stepper-element="content">
-              <Step5 />
+              <Step5/>
             </div>
             <!--end::Step 5-->
 
@@ -203,13 +203,13 @@
               <!--begin::Wrapper-->
               <div class="mr-2">
                 <button
-                  type="button"
-                  class="btn btn-lg btn-light-primary me-3"
-                  data-kt-stepper-action="previous"
-                  @click="previousStep"
+                    type="button"
+                    class="btn btn-lg btn-light-primary me-3"
+                    data-kt-stepper-action="previous"
+                    @click="previousStep"
                 >
                   <span class="svg-icon svg-icon-4 me-1">
-                    <inline-svg src="media/icons/duotune/arrows/arr063.svg" />
+                    <inline-svg src="media/icons/duotune/arrows/arr063.svg"/>
                   </span>
                   Back
                 </button>
@@ -219,22 +219,22 @@
               <!--begin::Wrapper-->
               <div>
                 <button
-                  type="button"
-                  class="btn btn-lg btn-primary me-3"
-                  data-kt-stepper-action="submit"
-                  v-if="currentStepIndex === totalSteps - 1"
-                  @click="formSubmit()"
+                    type="button"
+                    class="btn btn-lg btn-primary me-3"
+                    data-kt-stepper-action="submit"
+                    v-if="currentStepIndex === totalSteps - 1"
+                    @click="formSubmit()"
                 >
                   <span class="indicator-label">
                     Submit
                     <span class="svg-icon svg-icon-3 ms-2 me-0">
-                      <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
+                      <inline-svg src="media/icons/duotune/arrows/arr064.svg"/>
                     </span>
                   </span>
                   <span class="indicator-progress">
                     Please wait...
                     <span
-                      class="spinner-border spinner-border-sm align-middle ms-2"
+                        class="spinner-border spinner-border-sm align-middle ms-2"
                     ></span>
                   </span>
                 </button>
@@ -242,7 +242,7 @@
                 <button v-else type="submit" class="btn btn-lg btn-primary">
                   Continue
                   <span class="svg-icon svg-icon-4 ms-1 me-0">
-                    <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
+                    <inline-svg src="media/icons/duotune/arrows/arr064.svg"/>
                   </span>
                 </button>
               </div>
@@ -282,20 +282,19 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+import {computed, defineComponent, onMounted, ref} from "vue";
 import LayoutService from "@/core/services/LayoutService";
-import { getIllustrationsPath } from "@/core/helpers/assets";
+import {getIllustrationsPath} from "@/core/helpers/assets";
 import Step1 from "@/components/wizard/steps/Step1.vue";
 import Step2 from "@/components/wizard/steps/Step2.vue";
 import Step3 from "@/components/wizard/steps/Step3.vue";
 import Step4 from "@/components/wizard/steps/Step4.vue";
 import Step5 from "@/components/wizard/steps/Step5.vue";
-import { StepperComponent } from "@/assets/ts/components";
+import {StepperComponent} from "@/assets/ts/components";
 import * as Yup from "yup";
-import { useForm } from "vee-validate";
+import {useForm} from "vee-validate";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
-import { useStore } from "vuex";
-import { Actions } from "@/store/enums/StoreEnums";
+import {useBodyStore} from "@/stores/useBodyStore";
 
 interface IStep1 {
   accountType: string;
@@ -337,7 +336,7 @@ export default defineComponent({
     Step5
   },
   setup() {
-    const store = useStore();
+    const store = useBodyStore();
     const _stepperObj = ref<StepperComponent | null>(null);
     const wizardRef = ref<HTMLElement | null>(null);
     const currentStepIndex = ref(0);
@@ -362,14 +361,14 @@ export default defineComponent({
 
     onMounted(() => {
       _stepperObj.value = StepperComponent.createInsance(
-        wizardRef.value as HTMLElement
+          wizardRef.value as HTMLElement
       );
 
       LayoutService.emptyElementClassesAndAttributes(document.body);
 
-      store.dispatch(Actions.ADD_BODY_CLASSNAME, "app-blank");
+      store.addBodyClassName("app-blank");
 
-      store.dispatch(Actions.ADD_BODY_CLASSNAME, "bg-body");
+      store.addBodyClassName("bg-body");
     });
 
     const createAccountSchema = [
@@ -382,8 +381,8 @@ export default defineComponent({
       Yup.object({
         businessName: Yup.string().required().label("Business Name"),
         businessDescriptor: Yup.string()
-          .required()
-          .label("Shortened Descriptor"),
+            .required()
+            .label("Shortened Descriptor"),
         businessType: Yup.string().required().label("Corporation Type"),
         businessEmail: Yup.string().required().label("Contact Email")
       }),
@@ -400,7 +399,7 @@ export default defineComponent({
       return createAccountSchema[currentStepIndex.value];
     });
 
-    const { resetForm, handleSubmit } = useForm<IStep1 | IStep2 | IStep3 | IStep4>({
+    const {resetForm, handleSubmit} = useForm<IStep1 | IStep2 | IStep3 | IStep4>({
       validationSchema: currentSchema
     });
 

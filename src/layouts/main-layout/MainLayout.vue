@@ -37,19 +37,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, onMounted, watch } from "vue";
-import { useStore } from "vuex";
-import { useRoute, useRouter } from "vue-router";
+import {defineComponent, nextTick, onMounted, watch} from "vue";
+import {useRoute, useRouter} from "vue-router";
 import KTAside from "@/layouts/main-layout/aside/Aside.vue";
 import KTHeader from "@/layouts/main-layout/header/Header.vue";
 import KTFooter from "@/layouts/main-layout/footer/Footer.vue";
 import HtmlClass from "@/core/services/LayoutService";
 import KTScrollTop from "@/layouts/main-layout/extras/ScrollTop.vue";
 import KTLoader from "@/components/Loader.vue";
-import { Actions } from "@/store/enums/StoreEnums";
-import { MenuComponent } from "@/assets/ts/components";
-import { reinitializeComponents } from "@/core/plugins/keenthemes";
-import { removeModalBackdrop } from "@/core/helpers/dom";
+import {MenuComponent} from "@/assets/ts/components";
+import {reinitializeComponents} from "@/core/plugins/keenthemes";
+import {removeModalBackdrop} from "@/core/helpers/dom";
 import {
   asideEnabled,
   contentWidthFluid,
@@ -60,6 +58,8 @@ import {
   themeLightLogo,
   toolbarDisplay
 } from "@/core/helpers/config";
+import {useBodyStore} from "@/stores/useBodyStore";
+import {useAuthStore} from "@/stores/useAuthStore";
 
 export default defineComponent({
   name: "master-layout",
@@ -71,12 +71,12 @@ export default defineComponent({
     KTLoader
   },
   setup() {
-    const store = useStore();
+    const store = useBodyStore();
     const route = useRoute();
     const router = useRouter();
 
     // show page loading
-    store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
+    store.addBodyClassName("page-loading");
 
     onMounted(() => {
       //check if current user is authenticated
@@ -94,7 +94,7 @@ export default defineComponent({
       // Simulate the delay page loading
       setTimeout(() => {
         // Remove page loader after some time
-        store.dispatch(Actions.REMOVE_BODY_CLASSNAME, "page-loading");
+        store.removeBodyClassName("page-loading");
       }, 500);
     });
 
@@ -104,8 +104,8 @@ export default defineComponent({
         MenuComponent.hideDropdowns(undefined);
 
         // check if current user is authenticated
-        if (!store.getters.isUserAuthenticated) {
-          router.push({ name: "sign-in" });
+        if (!useAuthStore().isUserAuthenticated) {
+          router.push({name: "sign-in"});
         }
 
         nextTick(() => {

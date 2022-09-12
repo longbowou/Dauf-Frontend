@@ -7,24 +7,23 @@
 </template>
 
 <script>
-import { defineComponent, onMounted } from "vue";
-import { useStore } from "vuex";
-import { Actions } from "@/store/enums/StoreEnums";
+import {defineComponent, onMounted} from "vue";
+import {useBodyStore} from "@/stores/useBodyStore";
 
 export default defineComponent({
   name: "system-layout",
   components: {},
   setup() {
-    const store = useStore();
+    const store = useBodyStore();
 
     onMounted(() => {
-      store.dispatch(Actions.ADD_BODY_CLASSNAME, "app-blank");
+      store.addBodyClassName("app-blank");
 
-      store.dispatch(Actions.ADD_BODY_CLASSNAME, "bgi-size-cover");
+      store.addBodyClassName("bgi-size-cover");
 
-      store.dispatch(Actions.ADD_BODY_CLASSNAME, "bgi-position-center");
+      store.addBodyClassName("bgi-position-center");
 
-      store.dispatch(Actions.ADD_BODY_CLASSNAME, "bgi-no-repeat");
+      store.addBodyClassName("bgi-no-repeat");
     });
   }
 });
