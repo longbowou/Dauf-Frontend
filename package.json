@@ -50,8 +50,6 @@
     "vue-inline-svg": "^3.1.0",
     "vue-router": "^4.0.3",
     "vue3-apexcharts": "^1.4.1",
-    "vuex": "^4.0.0",
-    "vuex-multi-tab-state": "^1.0.17",
     "yup": "^0.32.8"
   },
   "devDependencies": {

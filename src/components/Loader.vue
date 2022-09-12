@@ -8,7 +8,7 @@
   </template>
   <template v-else-if="loaderType === 'spinner-logo'">
     <div class="page-loader flex-column">
-      <img alt="Logo" class="max-h-75px" :src="logo" />
+      <img alt="Logo" class="max-h-75px" :src="logo"/>
 
       <div class="d-flex align-items-center mt-5">
         <span class="spinner-border text-primary" role="status"></span>
@@ -27,8 +27,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
-import { useStore } from "vuex";
+import {computed, defineComponent} from "vue";
+import {useConfigStore} from "@/stores/useConfigStore";
 
 export default defineComponent({
   name: "layout-laoder",
@@ -36,10 +36,10 @@ export default defineComponent({
     logo: String
   },
   setup() {
-    const store = useStore();
+    const store = useConfigStore();
 
     const loaderType = computed(() => {
-      return store.getters.layoutConfig("loader.type");
+      return store.layoutConfig("loader.type");
     });
 
     return {

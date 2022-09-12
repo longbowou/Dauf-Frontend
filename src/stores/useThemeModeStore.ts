@@ -12,9 +12,7 @@ export const useThemeModeStore = defineStore('theme-mode', {
             : ThemeModeComponent.getSystemMode()
     }),
     getters: {
-        getThemeMode(): string {
-            return this.mode;
-        }
+        getThemeMode: (state) => state.mode
     },
     actions: {
         setThemeModeAction(payload) {

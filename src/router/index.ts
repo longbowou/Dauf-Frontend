@@ -30,7 +30,11 @@ const routes: Array<RouteRecordRaw> = [
             {
                 path: "/live",
                 name: "live",
-                component: () => import("@/views/Live.vue")
+                component: () => import("@/views/Live.vue"),
+                meta: {
+                    pageTitle: "Live",
+                    breadcrumbs: ["Live"]
+                }
             }
         ]
     },

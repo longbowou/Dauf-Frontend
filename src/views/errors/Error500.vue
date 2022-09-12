@@ -44,19 +44,19 @@
 
 <script lang="ts">
 import {computed, defineComponent, onMounted} from "vue";
-import {useStore} from "vuex";
 import {getIllustrationsPath} from "@/core/helpers/assets";
 import LayoutService from "@/core/services/LayoutService";
 import {useBodyStore} from "@/stores/useBodyStore";
+import {useThemeModeStore} from "@/stores/useThemeModeStore";
 
 export default defineComponent({
   name: "error-500",
   components: {},
   setup() {
-    const store = useStore();
+    const store = useThemeModeStore();
     const bodyStore = useBodyStore();
     const themeMode = computed(() => {
-      return store.getters.getThemeMode;
+      return store.getThemeMode;
     });
     const bgImage = themeMode.value !== "dark" ? "bg7.jpg" : "bg7-dark.jpg";
 

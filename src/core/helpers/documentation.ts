@@ -1,6 +1,9 @@
-import { computed } from "vue";
-import store from "@/store/index";
+import {computed} from "vue";
+import {useConfigStore} from "@/stores/useConfigStore";
 import ClipboardJS from "clipboard";
+
+const store = useConfigStore()
+
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 /**
@@ -8,7 +11,7 @@ import ClipboardJS from "clipboard";
  * @returns {string}
  */
 export const themeName = computed(() => {
-  return store.getters.layoutConfig("themeName");
+    return store.layoutConfig("themeName");
 });
 
 /**
@@ -16,7 +19,7 @@ export const themeName = computed(() => {
  * @returns {string}
  */
 export const version = computed(() => {
-  return store.getters.layoutConfig("themeVersion");
+    return store.layoutConfig("themeVersion");
 });
 
 /**
@@ -24,61 +27,61 @@ export const version = computed(() => {
  * @returns {string}
  */
 export const demo = computed(() => {
-  return store.getters.layoutConfig("demo");
+    return store.layoutConfig("demo");
 });
 
 //code copy button initialization
 export const useCopyClipboard = () => {
-  const _init = (element) => {
-    let elements = element;
+    const _init = (element) => {
+        let elements = element;
 
-    if (typeof elements === "undefined") {
-      elements = document.querySelectorAll(".highlight");
-    }
-
-    if (elements && elements.length > 0) {
-      for (let i = 0; i < elements.length; ++i) {
-        const highlight = elements[i];
-        const copy = highlight.querySelector(".highlight-copy");
-
-        if (copy) {
-          const clipboard = new ClipboardJS(copy, {
-            target: (trigger): any => {
-              const highlight = trigger.closest(".highlight");
-
-              if (highlight) {
-                let el: Element | null =
-                  highlight.querySelector(".tab-pane.active");
-
-                if (el == null) {
-                  el = highlight.querySelector(".highlight-code");
-                }
-
-                return el as Element;
-              }
-
-              return highlight;
-            }
-          });
-
-          clipboard.on("success", (e) => {
-            const caption = e.trigger.innerHTML;
-
-            e.trigger.innerHTML = "copied";
-            e.clearSelection();
-
-            setTimeout(function() {
-              e.trigger.innerHTML = caption;
-            }, 2000);
-          });
+        if (typeof elements === "undefined") {
+            elements = document.querySelectorAll(".highlight");
         }
-      }
-    }
-  };
 
-  return {
-    init: (element?) => {
-      _init(element);
-    }
-  };
+        if (elements && elements.length > 0) {
+            for (let i = 0; i < elements.length; ++i) {
+                const highlight = elements[i];
+                const copy = highlight.querySelector(".highlight-copy");
+
+                if (copy) {
+                    const clipboard = new ClipboardJS(copy, {
+                        target: (trigger): any => {
+                            const highlight = trigger.closest(".highlight");
+
+                            if (highlight) {
+                                let el: Element | null =
+                                    highlight.querySelector(".tab-pane.active");
+
+                                if (el == null) {
+                                    el = highlight.querySelector(".highlight-code");
+                                }
+
+                                return el as Element;
+                            }
+
+                            return highlight;
+                        }
+                    });
+
+                    clipboard.on("success", (e) => {
+                        const caption = e.trigger.innerHTML;
+
+                        e.trigger.innerHTML = "copied";
+                        e.clearSelection();
+
+                        setTimeout(function () {
+                            e.trigger.innerHTML = caption;
+                        }, 2000);
+                    });
+                }
+            }
+        }
+    };
+
+    return {
+        init: (element?) => {
+            _init(element);
+        }
+    };
 };

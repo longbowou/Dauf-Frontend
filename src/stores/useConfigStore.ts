@@ -11,10 +11,8 @@ export const useConfigStore = defineStore('config', {
         initial: layoutConfig as LayoutConfigTypes
     }),
     getters: {
-        layoutConfig() {
-            return (path, defaultValue) => {
-                return objectPath.get(this.config, path, defaultValue);
-            };
+        layoutConfig: (spate) => {
+            return (path, defaultValue = null) => objectPath.get(spate.config, path, defaultValue);
         }
     },
     actions: {

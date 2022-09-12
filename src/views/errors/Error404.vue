@@ -45,18 +45,18 @@
 <script lang="ts">
 import {computed, defineComponent, onMounted} from "vue";
 import LayoutService from "@/core/services/LayoutService";
-import {useStore} from "vuex";
 import {getIllustrationsPath} from "@/core/helpers/assets";
 import {useBodyStore} from "@/stores/useBodyStore";
+import {useThemeModeStore} from "@/stores/useThemeModeStore";
 
 export default defineComponent({
   name: "error-404",
   components: {},
   setup() {
-    const store = useStore();
+    const store = useThemeModeStore();
     const bodyStore = useBodyStore();
     const themeMode = computed(() => {
-      return store.getters.getThemeMode;
+      return store.getThemeMode;
     });
     const bgImage = themeMode.value !== "dark" ? "bg1.jpg" : "bg1-dark.jpg";
 

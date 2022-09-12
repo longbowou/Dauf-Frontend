@@ -24,12 +24,12 @@ export const useBodyStore = defineStore('body', {
         classes: {} as StoreInfo
     }),
     getters: {
-        getClasses() {
+        getClasses: (state) => {
             return (position) => {
                 if (typeof position !== "undefined") {
-                    return this.classes[position];
+                    return state.classes[position];
                 }
-                return this.classes;
+                return state.classes;
             };
         }
     },
