@@ -1,8 +1,7 @@
 import {createRouter, createWebHashHistory, RouteRecordRaw} from "vue-router";
-import store from "@/store";
-import {Mutations} from "@/store/enums/StoreEnums";
 import JwtService from "@/core/services/JwtService";
 import {useAuthStore} from "@/stores/useAuthStore";
+import {useConfigStore} from "@/stores/useConfigStore";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -113,7 +112,7 @@ router.beforeEach((to) => {
     document.title = `${to.meta.pageTitle} - ${process.env.VUE_APP_NAME}`;
 
     // reset config to initial state
-    store.commit(Mutations.RESET_LAYOUT_CONFIG);
+    useConfigStore().resetLayoutConfig();
 
     useAuthStore().verifyAuth({api_token: JwtService.getToken()});
 
