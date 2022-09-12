@@ -34,7 +34,7 @@
 import {defineComponent} from "vue";
 import {api as fullscreen} from "vue-fullscreen";
 import {mapState} from "pinia";
-import {useScriptureStore} from "@/stores/userScriptureStore";
+import {useScriptureStore} from "@/stores/useScriptureStore";
 
 export default defineComponent({
   name: "scripture-live",
