@@ -219,14 +219,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, onMounted, ref } from "vue";
-import { ErrorMessage, Field, Form } from "vee-validate";
+import {defineComponent, nextTick, onMounted, ref} from "vue";
+import {ErrorMessage, Field, Form} from "vee-validate";
 import * as Yup from "yup";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
-import { Actions } from "@/store/enums/StoreEnums";
-import { PasswordMeterComponent } from "@/assets/ts/components";
+import {useRouter} from "vue-router";
+import {PasswordMeterComponent} from "@/assets/ts/components";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
+import {useAuthStore} from "@/stores/useAuthStore";
 
 export default defineComponent({
   name: "sign-up",
@@ -236,7 +235,7 @@ export default defineComponent({
     ErrorMessage
   },
   setup() {
-    const store = useStore();
+    const store = useAuthStore();
     const router = useRouter();
 
     const submitButton = ref<HTMLButtonElement | null>(null);
@@ -260,7 +259,7 @@ export default defineComponent({
 
     const onSubmitRegister = async (values) => {
       // Clear existing errors
-      store.dispatch(Actions.LOGOUT);
+      store.logOut();
 
       // eslint-disable-next-line
       submitButton.value!.disabled = true;
@@ -269,10 +268,10 @@ export default defineComponent({
       submitButton.value?.setAttribute("data-kt-indicator", "on");
 
       // Send login request
-      await store.dispatch(Actions.REGISTER, values);
+      await store.register(values);
 
-      const [errorName] = Object.keys(store.getters.getErrors);
-      const error = store.getters.getErrors[errorName];
+      const [errorName] = Object.keys(store.getErrors);
+      const error = store.getErrors[errorName];
 
       if (!error) {
         Swal.fire({

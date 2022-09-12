@@ -69,12 +69,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { ErrorMessage, Field, Form } from "vee-validate";
-import { useStore } from "vuex";
+import {defineComponent, ref} from "vue";
+import {ErrorMessage, Field, Form} from "vee-validate";
 import * as Yup from "yup";
-import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
+import {useAuthStore} from "@/stores/useAuthStore";
 
 export default defineComponent({
   name: "password-reset",
@@ -84,7 +83,7 @@ export default defineComponent({
     ErrorMessage
   },
   setup() {
-    const store = useStore();
+    const store = useAuthStore();
 
     const submitButton = ref<HTMLButtonElement | null>(null);
 
@@ -102,10 +101,10 @@ export default defineComponent({
 
       // dummy delay
       // Send login request
-      await store.dispatch(Actions.FORGOT_PASSWORD, values);
+      await store.forgotPassword(values);
 
-      const [errorName] = Object.keys(store.getters.getErrors);
-      const error = store.getters.getErrors[errorName];
+      const [errorName] = Object.keys(store.getErrors);
+      const error = store.getErrors[errorName];
 
       if (!error) {
         Swal.fire({

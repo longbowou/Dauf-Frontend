@@ -161,13 +161,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { ErrorMessage, Field, Form } from "vee-validate";
-import { Actions } from "@/store/enums/StoreEnums";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import {defineComponent, ref} from "vue";
+import {ErrorMessage, Field, Form} from "vee-validate";
+import {useRouter} from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import * as Yup from "yup";
+import {useAuthStore} from "@/stores/useAuthStore";
 
 export default defineComponent({
   name: "sign-in",
@@ -177,7 +176,7 @@ export default defineComponent({
     ErrorMessage
   },
   setup() {
-    const store = useStore();
+    const store = useAuthStore();
     const router = useRouter();
 
     const submitButton = ref<HTMLButtonElement | null>(null);
@@ -191,7 +190,7 @@ export default defineComponent({
     //Form submit function
     const onSubmitLogin = async (values) => {
       // Clear existing errors
-      store.dispatch(Actions.LOGOUT);
+      store.logOut();
 
       if (submitButton.value) {
         // eslint-disable-next-line
@@ -201,9 +200,9 @@ export default defineComponent({
       }
 
       // Send login request
-      await store.dispatch(Actions.LOGIN, values);
-      const [errorName] = Object.keys(store.getters.getErrors);
-      const error = store.getters.getErrors[errorName];
+      await store.login(values);
+      const [errorName] = Object.keys(store.getErrors);
+      const error = store.getErrors[errorName];
 
       if (!error) {
         Swal.fire({
