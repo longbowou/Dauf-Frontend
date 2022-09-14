@@ -4,7 +4,7 @@ RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
 
 WORKDIR /app
 
-RUN pnpm add -g @vue/cli
+RUN yarn global add @vue/cli
 
 RUN chown node:node -R /app
 
