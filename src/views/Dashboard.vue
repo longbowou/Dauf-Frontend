@@ -240,8 +240,8 @@
           <div id="saved-card-body" class="card-body card-scroll p-5 pt-0">
             <div class="row">
               <div v-for="verse in savedVerses" :key="`saved-${verse?.id}`"
-                   :class="['bg-light', 'rounded', 'p-5', 'm-1']">
-                <a :id="`saved-verse-${verse?.id}`" class="btn p-1"
+                   :class="['bg-light', 'm-1']">
+                <a :id="`saved-verse-${verse?.id}`" class="btn p-2"
                    v-on:click="savedVerseClick(verse)">
                   <div>
                     <h3>{{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}</h3>
@@ -275,15 +275,26 @@
       <div class="card" style="background-color: transparent">
         <div id="card-body" class="card-body card-scroll p-5 pt-0">
           <div class="row">
-            <a v-for="(verse, index) in verses" :key="verse?.id" :id="`verse-${verse?.id}`" class="btn p-1"
-               v-on:click="verseClick(verse, index)">
-              <div
-                  :class="[(verse?.selected && verseSelectedIndex === index ? 'bg-primary' : 'bg-light'), 'rounded', 'p-5']"
-                  :id="verse?.slug">
-                <h3>{{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}</h3>
-                <span v-html="verse?.content"></span>
+            <div :class="[(verse?.selected && verseSelectedIndex === index ? 'bg-success' : 'bg-light'), 'm-1']"
+                 v-for="(verse, index) in verses" :key="verseKey(verse)">
+              <a :id="`verse-${verseKey(verse)}`" class="btn col-sm-12 p-0"
+                 v-on:click="verseClick(verse, index)">
+                <div
+                    class="pt-3 ps-3 pe-3"
+                    :id="verse?.slug">
+                  <h3>{{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}</h3>
+                  <span v-html="verse?.content"></span>
+                </div>
+              </a>
+
+              <div>
+                <button v-if="!isVerseSaved(verse)" @click="saveVerse(verse)"
+                        class="btn btn-text-gray-500 btn-active-color-primary p-0">
+                  Save
+                </button>
+                <span v-if="isVerseSaved(verse)" class="text-primary">Saved</span>
               </div>
-            </a>
+            </div>
           </div>
         </div>
       </div>
@@ -309,6 +320,8 @@ let suggestionsElement = undefined;
 let resultsElement = undefined;
 let emptyElement = undefined;
 let inputSearch = undefined;
+
+const wordsLimitCount = 35
 
 export default defineComponent({
   name: "dashboard-main",
@@ -345,8 +358,8 @@ export default defineComponent({
     window.addEventListener('keyup', (event) => this.keyup(event))
 
     this.$nextTick(function () {
-      window.$('#card-body').css({"max-height": `${window.innerHeight * 0.777}px`})
-      window.$('#saved-card-body').css({"max-height": `${window.innerHeight * 0.61}px`})
+      window.document.querySelector('#card-body').style.maxHeight = `${window.innerHeight * 0.777}px`
+      window.document.querySelector('#saved-card-body').style.maxHeight = `${window.innerHeight * 0.61}px`
     })
 
     uqrlClient
@@ -426,19 +439,18 @@ export default defineComponent({
         variables["chapterSlug"] = "genesis-1"
       }
       uqrlClient
-          .query(query, variables, {requestPolicy: "network-only"})
+          .query(query, variables)
           .toPromise()
           .then(result => {
             if (result.data && result.data.verses) {
               if (previous) {
-                const verses = JSON.parse(JSON.stringify(this.verses))
+                let verses = JSON.parse(JSON.stringify(this.verses))
                 verses.unshift(...result.data.verses)
+                verses = this.prettifyVerses(verses)
 
                 let index = this.verseSelectedIndex;
                 for (let i = 0; i < verses.length; i++) {
                   if (verses[i].id === this.verseSelected.id) {
-                    console.log(verses[0])
-                    console.log(i)
                     verses[i].selected = true;
                     index = i;
                     break;
@@ -447,9 +459,7 @@ export default defineComponent({
 
                 this.verses = verses;
                 this.verseSelectedIndex = index;
-                this.$nextTick(function () {
-                  this.scrollToVerse()
-                });
+                this.scrollToVerse()
               } else {
                 this.verses.push(...result.data.verses);
               }
@@ -488,6 +498,12 @@ export default defineComponent({
         }
       }
     },
+    verseKey(verse) {
+      if (verse.isPartial) {
+        return `${verse.index}-${verse.id}`
+      }
+      return verse.id
+    },
     verseClick(verse, index) {
       verse.selected = true
       this.verseSelected = verse
@@ -496,12 +512,14 @@ export default defineComponent({
       this.scrollToVerse()
     },
     scrollToVerse() {
-      const scroll = window.document.querySelector(`#verse-${this.verseSelected.id}`)
-      scroll?.scrollIntoView({
-        block: "center",
-        inline: "center",
-        behavior: "auto"
-      });
+      this.$nextTick(function () {
+        const scroll = window.document.querySelector(`#verse-${this.verseKey(this.verseSelected)}`)
+        scroll?.scrollIntoView({
+          block: "center",
+          inline: "center",
+          behavior: "auto"
+        });
+      })
     },
     initSearch() {
       wrapperElement = window.document.querySelector('[data-kt-search-element="wrapper"]');
@@ -651,7 +669,7 @@ export default defineComponent({
           .toPromise()
           .then((result) => {
             if (result.data && result.data.verses) {
-              const verses = result.data.verses
+              const verses = this.prettifyVerses(result.data.verses)
 
               let index = 0;
               for (let i = 0; i < verses.length; i++) {
@@ -666,9 +684,7 @@ export default defineComponent({
               this.verseSelected = verses[index];
               this.verseSelectedIndex = index;
               this.scriptureStore.setVerse(this.verseSelected)
-              this.$nextTick(function () {
-                this.scrollToVerse()
-              });
+              this.scrollToVerse()
             }
           })
       // Hide recently viewed
@@ -716,7 +732,7 @@ export default defineComponent({
           .toPromise()
           .then((result) => {
             if (result.data && result.data.verses) {
-              const verses = result.data.verses
+              const verses = this.prettifyVerses(result.data.verses)
 
               let index = 0;
               for (let i = 0; i < verses.length; i++) {
@@ -731,26 +747,34 @@ export default defineComponent({
               this.verseSelected = verses[index];
               this.verseSelectedIndex = index;
               this.scriptureStore.setVerse(this.verseSelected)
-              this.$nextTick(function () {
-                this.scrollToVerse()
-              });
+              this.scrollToVerse()
             }
           })
     },
-    processVerses(verses) {
+    prettifyVerses(verses) {
       const results = []
       for (const verse of verses) {
         const contentSplit = verse.content.split(" ")
-        if (contentSplit.length > 20) {
+        if (contentSplit.length > wordsLimitCount) {
           const contents = [];
-          for (let i = 0; i < contentSplit.length; i += 20) {
-            contents.push(contentSplit.slice(i, i + 20).join(" "))
+          for (let i = 0; i < contentSplit.length; i += wordsLimitCount) {
+            const slice = contentSplit.slice(i, i + wordsLimitCount);
+
+            if (i + wordsLimitCount >= contentSplit.length && slice.length <= 10) {
+              contents[contents.length - 1] += ` ${slice.join(" ")}`
+            } else {
+              contents.push(slice.join(" "))
+            }
           }
           for (let i = 0; i < contents.length; i++) {
-            const verse = JSON.parse(JSON.stringify(verse))
-            verse.index = i
-            verse.content = contents[i]
-            results.push()
+            const splitVerse = JSON.parse(JSON.stringify(verse))
+            splitVerse.index = i
+            splitVerse.content = contents[i]
+            splitVerse.isPartial = true
+            if (i < (contents.length - 1)) {
+              splitVerse.linkedToNext = true
+            }
+            results.push(splitVerse)
           }
         } else {
           results.push(verse)
@@ -788,7 +812,7 @@ export default defineComponent({
             .toPromise()
             .then((result) => {
               if (result.data && result.data.verses) {
-                const verses = result.data.verses
+                const verses = this.prettifyVerses(result.data.verses)
 
                 let index = 0;
                 for (let i = 0; i < verses.length; i++) {
@@ -803,9 +827,7 @@ export default defineComponent({
                 this.verseSelected = verses[index];
                 this.verseSelectedIndex = index;
                 this.scriptureStore.setVerse(this.verseSelected)
-                this.$nextTick(function () {
-                  this.scrollToVerse()
-                });
+                this.scrollToVerse()
               }
             })
       }
