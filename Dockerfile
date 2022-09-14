@@ -4,8 +4,6 @@ RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
 
 RUN SHELL=$SHELL pnpm setup
 
-RUN pnpm setup
-
 WORKDIR /app
 
 RUN pnpm add -g @vue/cli
