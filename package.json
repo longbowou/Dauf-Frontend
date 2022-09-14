@@ -39,6 +39,7 @@
     "nouislider": "^14.6.3",
     "object-path": "^0.11.8",
     "pinia": "^2.0.22",
+    "pinia-plugin-persistedstate": "^2.2.0",
     "pinia-shared-state": "^0.2.8",
     "prism-themes": "^1.9.0",
     "prismjs": "^1.25.0",

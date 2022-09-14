@@ -82,17 +82,29 @@
                 <!--end::Info-->
               </div>
 
-              <div :onclick="() => filterOnBookVerseSelected(verse)" v-for="verse in filterBookVerses" :key="verse?.id"
-                   class="d-flex align-items-center p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
+              <div v-for="verse in filterBookVerses"
+                   :key="verse?.id"
+                   class="d-flex flex-column align-items-start p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
                    data-kt-search-element="customer">
                 <!--begin::Info-->
-                <div class="fw-semibold">
-                <span class="fs-3">
-                  {{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}
-                </span> <br>
+                <div class="fw-semibold" :onclick="(event) => filterOnBookVerseSelected(event, verse)">
+                  <span class="fs-3">
+                    {{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}
+                  </span>
+
+                  <br>
+
                   <span class="fs-6 text-gray-800" style="text-align: justify">
-                  {{ verse?.content }}
-                </span>
+                    {{ verse?.content }}
+                  </span>
+                </div>
+
+                <div>
+                  <button v-if="!isVerseSaved(verse)" @click="saveVerse(verse)"
+                          class="btn btn-text-gray-500 btn-active-color-primary p-0">
+                    Save
+                  </button>
+                  <span v-if="isVerseSaved(verse)" class="text-primary">Saved</span>
                 </div>
                 <!--end::Info-->
               </div>
@@ -109,6 +121,32 @@
         <!--end::Wrapper-->
       </div>
       <!--end::Main wrapper-->
+
+      <div class="separator my-5" v-if="savedVerses?.length > 0"></div>
+
+      <div class="card pt-0" id="saved-card" style="background-color: transparent">
+        <div id="saved-card-body" class="card-body card-scroll p-5 pt-0">
+          <div class="row">
+            <div v-for="verse in savedVerses" :key="`saved-${verse?.id}`"
+                 :class="['bg-light', 'rounded', 'p-5', 'm-1']">
+              <a :id="`saved-verse-${verse?.id}`" class="btn p-1"
+                 v-on:click="savedVerseClick(verse)">
+                <div>
+                  <h3>{{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}</h3>
+                  <!--                  <span v-html="verse?.content"></span>-->
+                </div>
+              </a>
+
+              <br>
+
+              <button @click="removeSavedVerse(verse)"
+                      class="btn btn-text-gray-500 btn-active-color-danger p-0">
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="col-sm-8">
@@ -122,7 +160,7 @@
       </select>
 
       <div class="card" id="card" style="background-color: transparent">
-        <div id="card-body" class="card-body card-scroll p-5">
+        <div id="card-body" class="card-body card-scroll p-5 pt-0">
           <div class="row">
             <a v-for="(verse, index) in verses" :key="verse?.id" :id="`verse-${verse?.id}`" class="btn p-1"
                v-on:click="verseClick(verse, index)">
@@ -148,6 +186,7 @@ import {createClient} from "@urql/vue";
 import {useScriptureStore} from "@/stores/useScriptureStore";
 import {defaultSearchOptions, defaultSearchQueires, SearchComponent} from "@/assets/ts/components";
 import slugify from "slugify"
+import {useSavedScriptureStore} from "@/stores/useSavedScriptureStore";
 
 const uqrlClient = createClient({
   url: process.env.VUE_APP_API_URL,
@@ -163,8 +202,10 @@ export default defineComponent({
   name: "dashboard-main",
   setup() {
     const scriptureStore = useScriptureStore();
+    const savedScriptureStore = useSavedScriptureStore();
     return {
       scriptureStore,
+      savedScriptureStore,
     };
   },
   data() {
@@ -182,6 +223,7 @@ export default defineComponent({
       bookSelected: undefined,
       filterBooks: [],
       filterBookVerses: [],
+      savedVerses: [],
     }
   },
   components: {},
@@ -235,6 +277,8 @@ export default defineComponent({
         })
 
     this.initSearch();
+
+    this.savedVerses = this.savedScriptureStore.getSavedVerses
   },
   methods: {
     fetchVerses(next = false, previous = false) {
@@ -471,7 +515,9 @@ export default defineComponent({
       resultsElement.classList.add("d-none");
       inputSearch.focus()
     },
-    filterOnBookVerseSelected(verse) {
+    filterOnBookVerseSelected(event, verse) {
+      event.preventDefault()
+
       uqrlClient
           .query(`
             {
@@ -514,6 +560,68 @@ export default defineComponent({
       // Hide recently viewed
       resultsElement.classList.add("d-none");
       inputSearch.focus()
+    },
+    isVerseSaved(verse) {
+      for (const savedVerse of this.savedVerses) {
+        if (verse.id === savedVerse.id) {
+          return true
+        }
+      }
+      return false
+    },
+    saveVerse(verse) {
+      this.savedVerses.push(verse)
+      this.savedScriptureStore.setSavedVerses(this.savedVerses)
+    },
+    removeSavedVerse(verse) {
+      for (let i = 0; i < this.savedVerses.length; i++) {
+        if (this.savedVerses[i].id === verse.id) {
+          this.savedVerses.splice(i, 1)
+          break;
+        }
+      }
+      this.savedScriptureStore.setSavedVerses(this.savedVerses)
+    },
+    savedVerseClick(verse) {
+      uqrlClient
+          .query(`
+            {
+              verses(chapterSlug: "${verse.chapterSlug}", bibleSlug: "${this.searchBibleSelected.slug}"){
+                id
+                name
+                content
+                bible {
+                  id
+                  abbreviatedTitle
+                }
+                bibleSlug
+                chapterSlug
+                slug
+              }
+            }`, {})
+          .toPromise()
+          .then((result) => {
+            if (result.data && result.data.verses) {
+              const verses = result.data.verses
+
+              let index = 0;
+              for (let i = 0; i < verses.length; i++) {
+                if (verses[i].id === verse.id) {
+                  verses[i].selected = true;
+                  index = i;
+                  break;
+                }
+              }
+
+              this.verses = verses;
+              this.verseSelected = verses[index];
+              this.verseSelectedIndex = index;
+              this.scriptureStore.setVerse(this.verseSelected)
+              this.$nextTick(function () {
+                this.scrollToVerse()
+              });
+            }
+          })
     }
   },
   watch: {
