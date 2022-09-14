@@ -2,7 +2,7 @@
   <!--begin::Dashboard-->
   <div class="row">
     <div class="col-sm-4">
-      <select v-model="searchBibleSelected" id="bible-select" class="form-select mb-3"
+      <select v-model="searchBibleSelected" id="bible-select" class="form-select mb-3 form-select-lg"
               aria-label="Select example"
               data-control="select2">
         <option v-for="bible in bibles" :key="bible.id" :value="bible"
@@ -236,7 +236,7 @@
         </div>
         <!--end::Main wrapper-->
 
-        <div class="card pt-0" id="saved-card" style="background-color: transparent">
+        <div class="card pt-0" style="background-color: transparent">
           <div id="saved-card-body" class="card-body card-scroll p-5 pt-0">
             <div class="row">
               <div v-for="verse in savedVerses" :key="`saved-${verse?.id}`"
@@ -245,7 +245,7 @@
                    v-on:click="savedVerseClick(verse)">
                   <div>
                     <h3>{{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}</h3>
-                    <!--                  <span v-html="verse?.content"></span>-->
+                    <span v-html="verse?.content"></span>
                   </div>
                 </a>
 
@@ -263,7 +263,7 @@
     </div>
 
     <div class="col-sm-8">
-      <select v-model="liveBibleSelected" id="live-bible-select" class="form-select mb-2"
+      <select v-model="liveBibleSelected" id="live-bible-select" class="form-select form-select-lg mb-2"
               aria-label="Select example"
               data-control="select2">
         <option v-for="bible in bibles" :key="bible.id" :value="bible"
@@ -272,7 +272,7 @@
         </option>
       </select>
 
-      <div class="card" id="card" style="background-color: transparent">
+      <div class="card" style="background-color: transparent">
         <div id="card-body" class="card-body card-scroll p-5 pt-0">
           <div class="row">
             <a v-for="(verse, index) in verses" :key="verse?.id" :id="`verse-${verse?.id}`" class="btn p-1"
@@ -291,7 +291,6 @@
   </div>
   <!--end::Dashboard-->
 </template>
-
 
 <script lang="js">
 import {defineComponent} from "vue";
@@ -345,9 +344,10 @@ export default defineComponent({
     window.addEventListener('keydown', (event) => this.keydown(event))
     window.addEventListener('keyup', (event) => this.keyup(event))
 
-    // window.$('#bible-select').select2()
-    // window.$('#live-bible-select').select2()
-    window.$('#card-body').height(window.innerHeight * 0.75)
+    this.$nextTick(function () {
+      window.$('#card-body').css({"max-height": `${window.innerHeight * 0.777}px`})
+      window.$('#saved-card-body').css({"max-height": `${window.innerHeight * 0.61}px`})
+    })
 
     uqrlClient
         .query(`
@@ -736,6 +736,27 @@ export default defineComponent({
               });
             }
           })
+    },
+    processVerses(verses) {
+      const results = []
+      for (const verse of verses) {
+        const contentSplit = verse.content.split(" ")
+        if (contentSplit.length > 20) {
+          const contents = [];
+          for (let i = 0; i < contentSplit.length; i += 20) {
+            contents.push(contentSplit.slice(i, i + 20).join(" "))
+          }
+          for (let i = 0; i < contents.length; i++) {
+            const verse = JSON.parse(JSON.stringify(verse))
+            verse.index = i
+            verse.content = contents[i]
+            results.push()
+          }
+        } else {
+          results.push(verse)
+        }
+      }
+      return results
     }
   },
   watch: {

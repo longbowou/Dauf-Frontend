@@ -17,8 +17,6 @@ import {createPinia} from "pinia";
 import {PiniaSharedState} from "pinia-shared-state";
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
-import Select2 from 'vue3-select2-component';
-
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 pinia.use(
@@ -34,7 +32,6 @@ app.use(urql, {
 app.use(pinia);
 app.use(router);
 app.use(ElementPlus);
-app.component('Select-2', Select2)
 
 ApiService.init(app);
 initApexCharts(app);
