@@ -1,17 +1,17 @@
 <template>
   <!--begin::Dashboard-->
   <div
-    class="fullscreen-wrapper"
-    v-bind:style="{ cursor: cursor }"
-    v-on:change="onFullscreenChange"
-  >
-    <h3>{{ currentVerse?.name }}</h3>
-    <p>
-      <span>{{ currentVerse?.number }}</span> {{ currentVerse?.content }}
+      v-if="currentVerse"
+      class="fullscreen-wrapper"
+      v-bind:style="{ cursor: cursor }"
+      v-on:change="onFullscreenChange">
+    <h1 class="" style="font-size: 4.5rem">{{ currentVerse?.name }} • {{ currentVerse?.bible?.abbreviatedTitle }}</h1>
+    <p style="font-size: 4rem; text-align: justify; margin-left: 5%; margin-right: 5%" v-html="currentVerse?.content">
     </p>
+
     <button
-      class="btn btn-flex flex-center btn-bg-body btn-text-gray-500 btn-active-color-primary w-40px w-md-auto h-40px px-0 px-md-6"
-      @click="toggleFullscreen" v-if="!isFullscreen">Go Fullscreen
+        class="btn btn-flex flex-center btn-bg-body btn-text-gray-500 btn-active-color-primary w-40px w-md-auto h-40px px-0 px-md-6"
+        @click="toggleFullscreen" v-if="!isFullscreen">Go Fullscreen
     </button>
   </div>
 
@@ -26,7 +26,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
 }
 </style>
 

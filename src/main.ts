@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import ElementPlus from "element-plus";
 import i18n from "@/core/plugins/i18n";
+import urql from '@urql/vue';
 
 //imports for app initialization
 import ApiService from "@/core/services/ApiService";
@@ -14,6 +15,7 @@ import "@/core/plugins/prismjs";
 import "bootstrap";
 import {createPinia} from "pinia";
 import {PiniaSharedState} from "pinia-shared-state";
+import Select2 from 'vue3-select2-component';
 
 const pinia = createPinia()
 pinia.use(
@@ -28,9 +30,13 @@ pinia.use(
 )
 
 const app = createApp(App);
+app.use(urql, {
+    url: process.env.VUE_APP_API_URL,
+});
 app.use(pinia);
 app.use(router);
 app.use(ElementPlus);
+app.component('Select-2', Select2)
 
 ApiService.init(app);
 initApexCharts(app);

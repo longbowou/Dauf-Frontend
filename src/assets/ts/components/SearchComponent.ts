@@ -10,7 +10,7 @@ import {
   throttle
 } from "../_utils/index";
 
-import { defaultMenuOptions, MenuComponent } from "./MenuComponent";
+import {defaultMenuOptions, MenuComponent} from "./MenuComponent";
 
 export interface ISearchOptions {
   minLength: number; // Miniam text lenght to query search
@@ -28,7 +28,7 @@ export interface ISearchQueries {
 }
 
 const defaultSearchOptions: ISearchOptions = {
-  minLength: 2, // Miniam text lenght to query search
+  minLength: 1, // Miniam text lenght to query search
   keypress: true, // Enable search on keypress
   enter: true, // Enable search on enter key press
   layout: "menu", // Use 'menu' or 'inline' layout options to display search results

@@ -1,14 +1,8 @@
 import {defineStore} from "pinia";
 
-interface Verse {
-    name: string;
-    number: string;
-    content: string;
-}
-
 export const useScriptureStore = defineStore('scripture', {
     state: () => ({
-        current: {} as Verse
+        current: {}
     }),
     getters: {
         currentVerse: (state) => state.current,
@@ -20,6 +14,6 @@ export const useScriptureStore = defineStore('scripture', {
     },
     share: {
         enable: true,
-        initialize: true
+        initialize: false
     }
 })
