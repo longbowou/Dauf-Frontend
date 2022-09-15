@@ -462,7 +462,7 @@ export default defineComponent({
           .query(query, variables)
           .toPromise()
           .then(result => {
-            if (result.data && result.data.verses) {
+            if (result.data && result.data.verses && result.data.verses.length > 0) {
               if (previous) {
                 let verses = JSON.parse(JSON.stringify(this.verses))
                 verses.unshift(...result.data.verses)
@@ -590,7 +590,7 @@ export default defineComponent({
                   }
                 }`, {})
               .toPromise()
-          if (result.data && result.data.verses) {
+          if (result.data && result.data.verses && result.data.verses.length > 0) {
             this.filterBookVerses = result.data.verses
           }
         }
@@ -618,7 +618,7 @@ export default defineComponent({
                   }
                 }`, {})
               .toPromise()
-          if (result.data && result.data.verses) {
+          if (result.data && result.data.verses && result.data.verses.length > 0) {
             this.filterBookVerses = result.data.verses
           }
         } else if (searchSpitted.length > 1 && Number(searchSpitted[(searchSpitted.length - 1)])) {
@@ -639,7 +639,7 @@ export default defineComponent({
                   }
                 }`, {})
               .toPromise()
-          if (result.data && result.data.verses) {
+          if (result.data && result.data.verses && result.data.verses.length > 0) {
             this.filterBookVerses = result.data.verses
           }
         }
@@ -688,7 +688,7 @@ export default defineComponent({
             }`, {})
           .toPromise()
           .then((result) => {
-            if (result.data && result.data.verses) {
+            if (result.data && result.data.verses && result.data.verses.length > 0) {
               const verses = this.prettifyVerses(result.data.verses)
 
               let index = 0;
@@ -754,7 +754,7 @@ export default defineComponent({
             }`, {})
           .toPromise()
           .then((result) => {
-            if (result.data && result.data.verses) {
+            if (result.data && result.data.verses && result.data.verses.length > 0) {
               const verses = this.prettifyVerses(result.data.verses)
 
               let index = 0;
@@ -834,7 +834,7 @@ export default defineComponent({
             }`, {})
             .toPromise()
             .then((result) => {
-              if (result.data && result.data.verses) {
+              if (result.data && result.data.verses && result.data.verses.length > 0) {
                 const verses = this.prettifyVerses(result.data.verses)
 
                 let index = 0;
