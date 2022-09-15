@@ -34,7 +34,7 @@
 
           <!--begin::Input-->
           <input id="input-search" v-model="search" type="text"
-                 class="form-control form-control-lg form-control-solid px-15"
+                 class="form-control form-control-lg general/gen004.svg px-15"
                  name="search"
                  autofocus
                  placeholder="Genèse 1 1"
@@ -150,7 +150,7 @@
 
                 <!--begin::Input-->
                 <input id="saved-input-search" v-model="savedVersesSearch" type="text"
-                       class="form-control form-control-lg form-control-solid px-15"
+                       class="form-control form-control-lg general/gen004.svg px-15"
                        name="search"
                        autofocus
                        placeholder="Genèse 1 1"
