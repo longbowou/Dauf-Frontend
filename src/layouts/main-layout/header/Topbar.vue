@@ -8,9 +8,9 @@
                    class="btn btn-flex flex-center btn-bg-body btn-text-gray-500 btn-active-color-primary w-40px w-md-auto h-40px px-0 px-md-6"
                    tooltip="Live">
         <span class="svg-icon svg-icon-2 svg-icon-primary me-0 me-md-2">
-          <inline-svg src="media/icons/duotune/general/gen016.svg" />
+          <inline-svg src="media/icons/duotune/general/gen002.svg"/>
         </span>
-        <span class="d-none d-md-inline">Live</span>
+        <span class="d-none d-md-inline">Go Live</span>
       </router-link>
     </div>
     <!--end::Invite user-->
@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import {defineComponent} from "vue";
 import KTThemeModeSwitcher from "@/layouts/main-layout/theme-mode/ThemeModeSwitcher.vue";
 
 export default defineComponent({

@@ -125,127 +125,143 @@
       <div v-if="savedVerses?.length > 0">
         <div class="separator my-5"></div>
 
-        <!--begin::Main wrapper-->
-        <div class=""
-             id="saved_verses_search"
-             data-kt-search-keypress="true"
-             data-kt-search-min-length="1"
-             data-kt-search-enter="true"
-             data-kt-search-layout="inline">
+        <div class="row">
+          <div class="col-sm-10">
+            <!--begin::Main wrapper-->
+            <div class=""
+                 id="saved_verses_search"
+                 data-kt-search-keypress="true"
+                 data-kt-search-min-length="1"
+                 data-kt-search-enter="true"
+                 data-kt-search-layout="inline">
 
-          <!--begin::Input Form-->
-          <form data-kt-search-element="form" class="w-100 position-relative mb-5" autocomplete="off">
-            <!--begin::Hidden input(Added to disable form autocomplete)-->
-            <input type="hidden"/>
-            <!--end::Hidden input-->
+              <!--begin::Input Form-->
+              <form data-kt-search-element="form" class="w-100 position-relative mb-5" autocomplete="off">
+                <!--begin::Hidden input(Added to disable form autocomplete)-->
+                <input type="hidden"/>
+                <!--end::Hidden input-->
 
-            <!--begin::Icon-->
-            <span
-                class="svg-icon svg-icon-2 svg-icon-lg-1 svg-icon-gray-500 position-absolute top-50 ms-5 translate-middle-y">
+                <!--begin::Icon-->
+                <span
+                    class="svg-icon svg-icon-2 svg-icon-lg-1 svg-icon-gray-500 position-absolute top-50 ms-5 translate-middle-y">
             <inline-svg src="media/icons/duotune/general/gen021.svg"/>
         </span>
-            <!--end::Icon-->
+                <!--end::Icon-->
 
-            <!--begin::Input-->
-            <input id="saved-input-search" v-model="savedVersesSearch" type="text"
-                   class="form-control form-control-lg form-control-solid px-15"
-                   name="search"
-                   autofocus
-                   placeholder="Genèse 1 1"
-                   data-kt-search-element="input"/>
-            <!--end::Input-->
+                <!--begin::Input-->
+                <input id="saved-input-search" v-model="savedVersesSearch" type="text"
+                       class="form-control form-control-lg form-control-solid px-15"
+                       name="search"
+                       autofocus
+                       placeholder="Genèse 1 1"
+                       data-kt-search-element="input"/>
+                <!--end::Input-->
 
-            <!--begin::Spinner-->
-            <span class="position-absolute top-50 end-0 translate-middle-y lh-0 d-none me-5"
-                  data-kt-search-element="spinner">
+                <!--begin::Spinner-->
+                <span class="position-absolute top-50 end-0 translate-middle-y lh-0 d-none me-5"
+                      data-kt-search-element="spinner">
             <span class="spinner-border h-15px w-15px align-middle text-gray-400"></span>
         </span>
-            <!--end::Spinner-->
+                <!--end::Spinner-->
 
-            <!--begin::Reset-->
-            <span
-                class="btn btn-flush btn-active-color-primary position-absolute top-50 end-0 translate-middle-y lh-0 me-5 d-none"
-                data-kt-search-element="clear">
+                <!--begin::Reset-->
+                <span
+                    class="btn btn-flush btn-active-color-primary position-absolute top-50 end-0 translate-middle-y lh-0 me-5 d-none"
+                    data-kt-search-element="clear">
           <span class="svg-icon svg-icon-2 svg-icon-lg-1 me-0">
               <inline-svg src="media/icons/duotune/arrows/arr061.svg"/>
           </span>
         </span>
-            <!--end::Reset-->
-          </form>
-          <!--end::Form-->
+                <!--end::Reset-->
+              </form>
+              <!--end::Form-->
 
-          <!--begin::Wrapper-->
-          <div class="">
-            <!--being::Search suggestion-->
-            <div data-kt-search-element="suggestions">
+              <!--begin::Wrapper-->
+              <div class="">
+                <!--being::Search suggestion-->
+                <div data-kt-search-element="suggestions">
 
-            </div>
-            <!--end::Suggestion wrapper-->
+                </div>
+                <!--end::Suggestion wrapper-->
 
-            <!--begin::Search results-->
-            <div data-kt-search-element="results" class="d-none">
-              <div class="mh-300px scroll-y me-n5 pe-5">
-                <div :onclick="() => filterOnBookSelected(book)" v-for="book in filterBooks" :key="book?.id"
-                     class="d-flex align-items-center p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
-                     data-kt-search-element="customer">
-                  <!--begin::Info-->
-                  <div class="fw-semibold">
+                <!--begin::Search results-->
+                <div data-kt-search-element="results" class="d-none">
+                  <div class="mh-300px scroll-y me-n5 pe-5">
+                    <div :onclick="() => filterOnBookSelected(book)" v-for="book in filterBooks" :key="book?.id"
+                         class="d-flex align-items-center p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
+                         data-kt-search-element="customer">
+                      <!--begin::Info-->
+                      <div class="fw-semibold">
                 <span class="fs-6 text-gray-800" v-html="book?.name">
                 </span>
-                  </div>
-                  <!--end::Info-->
-                </div>
+                      </div>
+                      <!--end::Info-->
+                    </div>
 
-                <div v-for="verse in filterBookVerses"
-                     :key="verse?.id"
-                     class="d-flex flex-column align-items-start p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
-                     data-kt-search-element="customer">
-                  <!--begin::Info-->
-                  <div class="fw-semibold" :onclick="(event) => filterOnBookVerseSelected(event, verse)">
+                    <div v-for="verse in filterBookVerses"
+                         :key="verse?.id"
+                         class="d-flex flex-column align-items-start p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
+                         data-kt-search-element="customer">
+                      <!--begin::Info-->
+                      <div class="fw-semibold" :onclick="(event) => filterOnBookVerseSelected(event, verse)">
                   <span class="fs-3">
                     {{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}
                   </span>
 
-                    <br>
+                        <br>
 
-                    <span class="fs-6 text-gray-800" style="text-align: justify">
+                        <span class="fs-6 text-gray-800" style="text-align: justify">
                     {{ verse?.content }}
                   </span>
-                  </div>
+                      </div>
 
-                  <div>
-                    <button v-if="!isVerseSaved(verse)" @click="saveVerse(verse)"
-                            class="btn btn-text-gray-500 btn-active-color-primary p-0">
-                      Save
-                    </button>
-                    <span v-if="isVerseSaved(verse)" class="text-primary">Saved</span>
+                      <div>
+                        <button v-if="!isVerseSaved(verse)" @click="saveVerse(verse)"
+                                class="btn btn-text-gray-500 btn-active-color-primary p-0">
+                          Save
+                        </button>
+                        <span v-if="isVerseSaved(verse)" class="text-primary">Saved</span>
+                      </div>
+                      <!--end::Info-->
+                    </div>
                   </div>
-                  <!--end::Info-->
                 </div>
+                <!--end::Search results-->
+
+                <!--begin::Empty search-->
+                <div data-kt-search-element="empty" class="text-center d-none">
+
+                </div>
+                <!--end::Empty search-->
               </div>
+              <!--end::Wrapper-->
             </div>
-            <!--end::Search results-->
-
-            <!--begin::Empty search-->
-            <div data-kt-search-element="empty" class="text-center d-none">
-
-            </div>
-            <!--end::Empty search-->
+            <!--end::Main wrapper-->
           </div>
-          <!--end::Wrapper-->
+
+          <div class="col-sm-1">
+            <div class="form-check form-switch form-check-custom form-check-solid">
+              <input v-model="showSavedVerseContent" class="form-check-input h-40px w-60px"
+                     type="checkbox" value=""
+                     id="flexSwitchChecked" checked="checked"/>
+            </div>
+          </div>
         </div>
-        <!--end::Main wrapper-->
 
         <div class="card pt-0" style="background-color: transparent">
           <div id="saved-card-body" class="card-body card-scroll p-5 pt-0">
             <div class="row">
               <div v-for="verse in savedVerses" :key="`saved-${verse?.id}`"
                    :class="['bg-light', 'm-1']">
-                <a :id="`saved-verse-${verse?.id}`" class="btn p-2"
+                <a :id="`saved-verse-${verse?.id}`" class="btn ps-2 pt-2 pe-2 pb-0 col-sm-12"
                    v-on:click="savedVerseClick(verse)">
                   <div>
-                    <h3>{{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}</h3>
-                    <span v-html="verse?.content"></span>
+                    <h3>
+                      <span v-if="isSavedVerseOnLive(verse)"
+                            class="bullet bullet-dot bg-success h-15px w-15px me-5"></span>
+                      {{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}
+                    </h3>
+                    <span v-if="showSavedVerseContent" v-html="verse?.content"></span>
                   </div>
                 </a>
 
@@ -285,6 +301,9 @@
                   <h3>{{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}</h3>
                   <span v-html="verse?.content"></span>
                 </div>
+                <span v-if="verse.linkedToNext" class="svg-icon svg-icon-2 svg-icon-dark me-0 me-md-2">
+                  <inline-svg src="media/icons/duotune/arrows/arr082.svg"/>
+                </span>
               </a>
 
               <div>
@@ -321,7 +340,7 @@ let resultsElement = undefined;
 let emptyElement = undefined;
 let inputSearch = undefined;
 
-const wordsLimitCount = 35
+const wordsLimitCount = 30
 
 export default defineComponent({
   name: "dashboard-main",
@@ -350,6 +369,7 @@ export default defineComponent({
       filterBookVerses: [],
       savedVerses: [],
       savedVersesSearch: "",
+      showSavedVerseContent: false
     }
   },
   components: {},
@@ -698,6 +718,9 @@ export default defineComponent({
         }
       }
       return false
+    },
+    isSavedVerseOnLive(verse) {
+      return verse.chapterSlug === this.verseSelected?.chapterSlug
     },
     saveVerse(verse) {
       this.savedVerses.push(verse)

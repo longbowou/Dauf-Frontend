@@ -14,6 +14,6 @@ export const useScriptureStore = defineStore('scripture', {
     },
     share: {
         enable: true,
-        initialize: false
+        initialize: true
     }
 })
