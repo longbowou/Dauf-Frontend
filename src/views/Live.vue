@@ -1,11 +1,10 @@
 <template>
   <!--begin::Dashboard-->
   <div
-      v-if="currentVerse"
       class="fullscreen-wrapper"
       v-bind:style="{ cursor: cursor }"
       v-on:change="onFullscreenChange">
-    <div class="d-flex flex-column" style="margin-left: 5%; margin-right: 5%">
+    <div v-if="currentVerse" class="d-flex flex-column" style="margin-left: 5%; margin-right: 5%">
       <h1 class="text-center text-danger" style="font-size: 5.5rem">
         {{ currentVerse?.name }} • {{ currentVerse?.bible?.abbreviatedTitle }}
       </h1>
