@@ -28,7 +28,7 @@
           <!--begin::Icon-->
           <span
               class="svg-icon svg-icon-2 svg-icon-lg-1 svg-icon-gray-500 position-absolute top-50 ms-5 translate-middle-y">
-            <inline-svg src="media/icons/duotune/general/gen021.svg"/>
+            <inline-svg src="media/icons/duotune/general/gen004.svg"/>
         </span>
           <!--end::Icon-->
 
@@ -144,7 +144,7 @@
                 <!--begin::Icon-->
                 <span
                     class="svg-icon svg-icon-2 svg-icon-lg-1 svg-icon-gray-500 position-absolute top-50 ms-5 translate-middle-y">
-            <inline-svg src="media/icons/duotune/general/gen021.svg"/>
+            <inline-svg src="media/icons/duotune/general/gen004.svg"/>
         </span>
                 <!--end::Icon-->
 
