@@ -5,16 +5,26 @@
       class="fullscreen-wrapper"
       v-bind:style="{ cursor: cursor }"
       v-on:change="onFullscreenChange">
-
     <div class="d-flex flex-column" style="margin-left: 5%; margin-right: 5%">
-      <h1 class="text-center" style="font-size: 5.5rem">
+      <h1 class="text-center text-danger" style="font-size: 5.5rem">
         {{ currentVerse?.name }} • {{ currentVerse?.bible?.abbreviatedTitle }}
       </h1>
-      <p style="font-size: 5rem; text-align: justify;" v-html="currentVerse?.content">
+
+      <p style="font-size: 5rem; text-align: justify; color: #E4E6EF" class="fw-bold" v-html="currentVerse?.content">
       </p>
-      <span v-if="currentVerse.isPartial" class="svg-icon svg-icon-4x svg-icon-dark align-self-end">
-        <inline-svg src="media/icons/duotune/arrows/arr080.svg"/>
-      </span>
+
+      <div class="d-flex justify-content-evenly">
+        <div class="d-flex flex-grow-1 justify-content-end">
+          <i class="fa-duotone fa-3x fa-book-open-cover mt-5 align-self-center"></i>
+        </div>
+
+        <div class="d-flex flex-grow-1 justify-content-end">
+          <span v-if="currentVerse.isPartial" class="svg-icon svg-icon-4x svg-icon-dark">
+            <inline-svg src="media/icons/duotune/arrows/arr080.svg"/>
+          </span>
+        </div>
+
+      </div>
     </div>
 
     <button
@@ -33,11 +43,15 @@
 .fullscreen-wrapper {
   width: 100%;
   height: 100%;
-  //background: #f5f8fa;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background: hsla(249, 38%, 20%, 1);
+  background: radial-gradient(circle, hsla(249, 38%, 20%, 1) 0%, hsla(0, 0%, 7%, 1) 100%);
+  background: -moz-radial-gradient(circle, hsla(249, 38%, 20%, 1) 0%, hsla(0, 0%, 7%, 1) 100%);
+  background: -webkit-radial-gradient(circle, hsla(249, 38%, 20%, 1) 0%, hsla(0, 0%, 7%, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#251F45", endColorstr="#121212", GradientType=1);
 }
 </style>
 
@@ -54,6 +68,14 @@ export default defineComponent({
     return {
       isFullscreen: false
     };
+  },
+  mounted() {
+    window.addEventListener('keydown', (event) => {
+      if (event.key === "F11") {
+        event.preventDefault();
+        this.toggleFullscreen();
+      }
+    });
   },
   computed: {
     cursor() {
