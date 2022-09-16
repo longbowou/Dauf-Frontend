@@ -853,15 +853,19 @@ export default defineComponent({
               contents.push(slice.join(" "))
             }
           }
-          for (let i = 0; i < contents.length; i++) {
-            const splitVerse = JSON.parse(JSON.stringify(verse))
-            splitVerse.index = i
-            splitVerse.content = contents[i]
-            splitVerse.isPartial = true
-            if (i < (contents.length - 1)) {
-              splitVerse.linkedToNext = true
+          if (contents.length === 1) {
+            results.push(verse)
+          } else {
+            for (let i = 0; i < contents.length; i++) {
+              const splitVerse = JSON.parse(JSON.stringify(verse))
+              splitVerse.index = i
+              splitVerse.content = contents[i]
+              splitVerse.isPartial = true
+              if (i < (contents.length - 1)) {
+                splitVerse.linkedToNext = true
+              }
+              results.push(splitVerse)
             }
-            results.push(splitVerse)
           }
         } else {
           results.push(verse)
