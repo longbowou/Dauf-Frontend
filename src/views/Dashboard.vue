@@ -334,12 +334,12 @@ const uqrlClient = createClient({
   url: process.env.VUE_APP_API_URL,
 })
 
-let searchComponent = undefined;
-let wrapperElement = undefined;
-let suggestionsElement = undefined;
-let resultsElement = undefined;
-let emptyElement = undefined;
-let inputSearch = undefined;
+let verseSearchComponent = undefined;
+let verseSearchWrapperElement = undefined;
+let verseSearchSuggestionsElement = undefined;
+let verseSearchResultsElement = undefined;
+let verseSearchEmptyElement = undefined;
+let verseSearchInput = undefined;
 
 const wordsLimitCount = 30
 
@@ -378,8 +378,8 @@ export default defineComponent({
     window.addEventListener('keydown', (event) => this.keydown(event))
     window.addEventListener('keyup', (event) => this.keyup(event))
 
-    inputSearch = window.document.querySelector('#input-search');
-    inputSearch.addEventListener('keydown', (event) => {
+    verseSearchInput = window.document.querySelector('#input-search');
+    verseSearchInput.addEventListener('keydown', (event) => {
       if (event.key === "Tab" && this.filterBooks.length > 0) {
         event.preventDefault()
         this.filterOnBookSelected(this.filterBooks[0])
@@ -432,7 +432,8 @@ export default defineComponent({
           }
         })
 
-    this.initSearch();
+    this.initVerseSearch();
+    this.initSavedVerseSearch();
 
     this.savedVerses = this.savedScriptureStore.getSavedVerses
   },
@@ -550,27 +551,27 @@ export default defineComponent({
         });
       })
     },
-    initSearch() {
-      wrapperElement = window.document.querySelector('[data-kt-search-element="wrapper"]');
-      suggestionsElement = window.document.querySelector('[data-kt-search-element="suggestions"]');
-      resultsElement = window.document.querySelector('[data-kt-search-element="results"]');
-      emptyElement = window.document.querySelector('[data-kt-search-element="empty"]');
+    initVerseSearch() {
+      verseSearchWrapperElement = window.document.querySelector('[data-kt-search-element="wrapper"]');
+      verseSearchSuggestionsElement = window.document.querySelector('[data-kt-search-element="suggestions"]');
+      verseSearchResultsElement = window.document.querySelector('[data-kt-search-element="results"]');
+      verseSearchEmptyElement = window.document.querySelector('[data-kt-search-element="empty"]');
 
-      searchComponent = new SearchComponent(
+      verseSearchComponent = new SearchComponent(
           window.document.querySelector("#kt_docs_search_handler_basic"),
           defaultSearchOptions,
           defaultSearchQueires
       )
-      searchComponent.on('kt.search.clear', () => {
+      verseSearchComponent.on('kt.search.clear', () => {
         // Show recently viewed
-        suggestionsElement.classList.remove("d-none");
+        verseSearchSuggestionsElement.classList.remove("d-none");
         // Hide results
-        resultsElement.classList.add("d-none");
+        verseSearchResultsElement.classList.add("d-none");
         // Hide empty message
-        emptyElement.classList.add("d-none");
+        verseSearchEmptyElement.classList.add("d-none");
       })
 
-      searchComponent.on('kt.search.process', async () => {
+      verseSearchComponent.on('kt.search.process', async () => {
         const searchSpitted = this.search.split(" ")
         this.filterBooks = []
         if (searchSpitted.length <= 1) {
@@ -653,9 +654,9 @@ export default defineComponent({
         }
 
         // Show results
-        resultsElement.classList.remove("d-none");
+        verseSearchResultsElement.classList.remove("d-none");
         // Hide empty message
-        emptyElement.classList.add("d-none");
+        verseSearchEmptyElement.classList.add("d-none");
 
         // Hide recently viewed
         // suggestionsElement.classList.add("d-none");
@@ -664,7 +665,7 @@ export default defineComponent({
         // Show empty message
         // emptyElement.classList.remove("d-none");
 
-        searchComponent.complete();
+        verseSearchComponent.complete();
       })
     },
     onInputSearchKeyup(event) {
@@ -675,9 +676,9 @@ export default defineComponent({
       this.bookSelected = book
 
       // Hide recently viewed
-      resultsElement.classList.add("d-none");
-      inputSearch.focus()
-      searchComponent.search()
+      verseSearchResultsElement.classList.add("d-none");
+      verseSearchInput.focus()
+      verseSearchComponent.search()
     },
     filterOnBookVerseSelected(event, verse) {
       event.preventDefault()
@@ -720,8 +721,8 @@ export default defineComponent({
             }
           })
       // Hide recently viewed
-      resultsElement.classList.add("d-none");
-      inputSearch.focus()
+      verseSearchResultsElement.classList.add("d-none");
+      verseSearchInput.focus()
     },
     isVerseSaved(verse) {
       for (const savedVerse of this.savedVerses) {
