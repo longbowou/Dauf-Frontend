@@ -237,7 +237,7 @@
         </div>
 
         <div class="card pt-0" style="background-color: transparent">
-          <div id="saved-card-body" class="card-body card-scroll p-5 pt-0">
+          <div id="saved-card-body" class="card-body card-scroll p-0 pe-5">
             <div class="row">
               <div v-for="verse in savedVerses" :key="`saved-${verse?.id}`"
                    :class="['bg-light', 'm-1']">
@@ -260,6 +260,11 @@
                   Remove
                 </button>
               </div>
+
+              <button @click="removeSavedVerses"
+                      class="btn btn-text-gray-500 btn-active-color-danger ">
+                Remove all
+              </button>
             </div>
           </div>
         </div>
@@ -277,7 +282,7 @@
       </select>
 
       <div class="card" style="background-color: transparent">
-        <div id="card-body" class="card-body card-scroll p-5 pt-0">
+        <div id="card-body" class="card-body card-scroll p-0 pe-5">
           <div class="row">
             <div :class="[(verse?.selected && verseSelectedIndex === index ? 'bg-success' : 'bg-light'), 'm-1']"
                  v-for="(verse, index) in verses" :key="verseKey(verse)">
@@ -784,6 +789,10 @@ export default defineComponent({
       if (this.filteredSavedVerses.length > 0) {
         this.filterSavedVerses()
       }
+    },
+    removeSavedVerses() {
+      this.savedVerses = []
+      this.savedScriptureStore.setSavedVerses(this.savedVerses)
     },
     savedVerseClick(verse) {
       uqrlClient
