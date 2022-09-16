@@ -114,7 +114,12 @@
 
           <!--begin::Empty search-->
           <div data-kt-search-element="empty" class="text-center d-none">
-
+            <!--begin::Message-->
+            <div class="fw-semibold py-0 mb-10">
+              <div class="text-gray-600 fs-3 mb-2">No verses found</div>
+              <div class="text-gray-400 fs-6">Try to search by book name chapter number or verse number</div>
+            </div>
+            <!--end::Message-->
           </div>
           <!--end::Empty search-->
         </div>
@@ -218,7 +223,12 @@
 
                 <!--begin::Empty search-->
                 <div data-kt-search-element="empty" class="text-center d-none">
-
+                  <!--begin::Message-->
+                  <div class="fw-semibold py-0 mb-10">
+                    <div class="text-gray-600 fs-3 mb-2">No saved verses found</div>
+                    <div class="text-gray-400 fs-6">Try to search by book name chapter number or verse number</div>
+                  </div>
+                  <!--end::Message-->
                 </div>
                 <!--end::Empty search-->
               </div>
@@ -565,11 +575,11 @@ export default defineComponent({
       )
       verseSearchComponent.on('kt.search.clear', () => {
         // Show recently viewed
-        verseSearchComponent.suggestionsElement.classList.remove("d-none");
+        verseSearchComponent.showSuggestionsElement();
         // Hide results
-        verseSearchComponent.resultsElement.classList.add("d-none");
+        verseSearchComponent.hideResultsElement();
         // Hide empty message
-        verseSearchComponent.emptyElement.classList.add("d-none");
+        verseSearchComponent.hideEmptyElement();
 
         this.verseSearch = ''
         this.filteredBooks = []
@@ -586,6 +596,7 @@ export default defineComponent({
         }
 
         if (this.bookNames.includes(this.verseSearch.trim())) {
+          this.filterBookVerses = []
           const result = await uqrlClient
               .query(`
                 {
@@ -611,6 +622,7 @@ export default defineComponent({
         if (searchSpitted.length > 2 &&
             Number(searchSpitted[(searchSpitted.length - 2)]) &&
             Number(searchSpitted[(searchSpitted.length - 1)])) {
+          this.filterBookVerses = []
           const result = await uqrlClient
               .query(`
                 {
@@ -634,7 +646,9 @@ export default defineComponent({
           if (result.data && result.data.verses && result.data.verses.length > 0) {
             this.filterBookVerses = result.data.verses
           }
-        } else if (searchSpitted.length > 1 && Number(searchSpitted[(searchSpitted.length - 1)])) {
+        } else if (searchSpitted.length > 1 &&
+            Number(searchSpitted[(searchSpitted.length - 1)])) {
+          this.filterBookVerses = []
           const result = await uqrlClient
               .query(`
                 {
@@ -657,17 +671,26 @@ export default defineComponent({
           }
         }
 
-        // Show results
-        verseSearchComponent.resultsElement.classList.remove("d-none");
-        // Hide empty message
-        verseSearchComponent.emptyElement.classList.add("d-none");
+        if (this.filteredBooks.length === 0 &&
+            this.filterBookVerses.length === 0) {
+          // Show results
+          verseSearchComponent.hideResultsElement();
 
-        // Hide recently viewed
-        // suggestionsElement.classList.add("d-none");
-        // Hide results
-        // resultsElement.classList.add("d-none");
-        // Show empty message
-        // emptyElement.classList.remove("d-none");
+          // Hide empty message
+          verseSearchComponent.showEmptyElement();
+        } else {
+          // Show results
+          verseSearchComponent.showResultsElement();
+
+          // Hide empty message
+          verseSearchComponent.hideEmptyElement();
+
+          verseSearchComponent.resultsElement?.firstChild?.scrollIntoView({
+            block: "start",
+            inline: "start",
+            behavior: "auto"
+          });
+        }
 
         verseSearchComponent.complete();
       })
@@ -680,11 +703,11 @@ export default defineComponent({
       )
       savedVerseSearchComponent.on('kt.search.clear', () => {
         // Show recently viewed
-        savedVerseSearchComponent.suggestionsElement.classList.remove("d-none");
+        savedVerseSearchComponent.showSuggestionsElement();
         // Hide results
-        savedVerseSearchComponent.resultsElement.classList.add("d-none");
+        savedVerseSearchComponent.hideResultsElement();
         // Hide empty message
-        savedVerseSearchComponent.emptyElement.classList.add("d-none");
+        savedVerseSearchComponent.hideEmptyElement();
 
         this.savedVersesSearch = ''
         this.filteredSavedVerses = []
@@ -693,17 +716,19 @@ export default defineComponent({
       savedVerseSearchComponent.on('kt.search.process', async () => {
         this.filterSavedVerses();
 
-        // Show results
-        savedVerseSearchComponent.resultsElement.classList.remove("d-none");
-        // Hide empty message
-        savedVerseSearchComponent.emptyElement.classList.add("d-none");
+        if (this.filteredSavedVerses.length === 0) {
+          // Show results
+          savedVerseSearchComponent.hideResultsElement();
 
-        // Hide recently viewed
-        // suggestionsElement.classList.add("d-none");
-        // Hide results
-        // resultsElement.classList.add("d-none");
-        // Show empty message
-        // emptyElement.classList.remove("d-none");
+          // Hide empty message
+          savedVerseSearchComponent.showEmptyElement();
+        } else {
+          // Show results
+          savedVerseSearchComponent.showResultsElement();
+
+          // Hide empty message
+          savedVerseSearchComponent.hideEmptyElement();
+        }
 
         savedVerseSearchComponent.complete();
       })
@@ -718,8 +743,7 @@ export default defineComponent({
       this.verseSearch = `${book.name} `
       this.bookSelected = book
 
-      // Hide recently viewed
-      verseSearchComponent.resultsElement.classList.add("d-none");
+      verseSearchComponent.hideResultsElement();
       verseSearchInput.focus()
       verseSearchComponent.search()
     },
@@ -764,7 +788,7 @@ export default defineComponent({
             }
           })
       // Hide recently viewed
-      verseSearchComponent.resultsElement.classList.add("d-none");
+      verseSearchComponent.hideResultsElement();
       verseSearchInput.focus()
     },
     isVerseSaved(verse) {
@@ -845,7 +869,7 @@ export default defineComponent({
     onFilteredSavedVerseClick(verse) {
       this.onSavedVerseClick(verse)
 
-      savedVerseSearchComponent.resultsElement.classList.add("d-none");
+      savedVerseSearchComponent.hideResultsElement();
     },
     prettifyVerses(verses) {
       const results = []
