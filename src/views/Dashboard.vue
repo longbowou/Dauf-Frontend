@@ -33,7 +33,7 @@
           <!--end::Icon-->
 
           <!--begin::Input-->
-          <input id="input-search" v-model="search" type="text"
+          <input id="input-search" v-model="search" type="text" @keyup="onInputSearchKeyup"
                  class="form-control form-control-lg general/gen004.svg px-15"
                  name="search"
                  autofocus
@@ -153,7 +153,7 @@
                        class="form-control form-control-lg general/gen004.svg px-15"
                        name="search"
                        autofocus
-                       placeholder="Genèse 1 1"
+                       placeholder="Exode 1 1"
                        data-kt-search-element="input"/>
                 <!--end::Input-->
 
@@ -334,6 +334,7 @@ const uqrlClient = createClient({
   url: process.env.VUE_APP_API_URL,
 })
 
+let searchComponent = undefined;
 let wrapperElement = undefined;
 let suggestionsElement = undefined;
 let resultsElement = undefined;
@@ -376,6 +377,14 @@ export default defineComponent({
   mounted() {
     window.addEventListener('keydown', (event) => this.keydown(event))
     window.addEventListener('keyup', (event) => this.keyup(event))
+
+    inputSearch = window.document.querySelector('#input-search');
+    inputSearch.addEventListener('keydown', (event) => {
+      if (event.key === "Tab" && this.filterBooks.length > 0) {
+        event.preventDefault()
+        this.filterOnBookSelected(this.filterBooks[0])
+      }
+    })
 
     this.$nextTick(function () {
       window.document.querySelector('#card-body').style.maxHeight = `${window.innerHeight * 0.777}px`
@@ -546,14 +555,13 @@ export default defineComponent({
       suggestionsElement = window.document.querySelector('[data-kt-search-element="suggestions"]');
       resultsElement = window.document.querySelector('[data-kt-search-element="results"]');
       emptyElement = window.document.querySelector('[data-kt-search-element="empty"]');
-      inputSearch = window.document.querySelector('#input-search');
 
-      const search = new SearchComponent(
+      searchComponent = new SearchComponent(
           window.document.querySelector("#kt_docs_search_handler_basic"),
           defaultSearchOptions,
           defaultSearchQueires
       )
-      search.on('kt.search.clear', () => {
+      searchComponent.on('kt.search.clear', () => {
         // Show recently viewed
         suggestionsElement.classList.remove("d-none");
         // Hide results
@@ -562,7 +570,7 @@ export default defineComponent({
         emptyElement.classList.add("d-none");
       })
 
-      search.on('kt.search.process', async () => {
+      searchComponent.on('kt.search.process', async () => {
         const searchSpitted = this.search.split(" ")
         this.filterBooks = []
         if (searchSpitted.length <= 1) {
@@ -656,16 +664,20 @@ export default defineComponent({
         // Show empty message
         // emptyElement.classList.remove("d-none");
 
-        search.complete();
+        searchComponent.complete();
       })
     },
+    onInputSearchKeyup(event) {
+      console.log(event.key)
+    },
     filterOnBookSelected(book) {
-      this.search = book.name
+      this.search = `${book.name} `
       this.bookSelected = book
 
       // Hide recently viewed
       resultsElement.classList.add("d-none");
       inputSearch.focus()
+      searchComponent.search()
     },
     filterOnBookVerseSelected(event, verse) {
       event.preventDefault()
