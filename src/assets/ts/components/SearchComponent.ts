@@ -51,9 +51,9 @@ class SearchComponent {
   toggleElement: HTMLElement;
   submitElement: HTMLElement;
   toolbarElement: HTMLElement;
-  resultsElement: HTMLElement;
-  suggestionElement: HTMLElement;
-  emptyElement: HTMLElement;
+  public resultsElement: HTMLElement;
+  public suggestionsElement: HTMLElement;
+  public emptyElement: HTMLElement;
   layout: any;
 
   options: ISearchOptions;
@@ -79,7 +79,7 @@ class SearchComponent {
     this.toolbarElement = this._getElement("toolbar") as HTMLElement;
 
     this.resultsElement = this._getElement("results") as HTMLElement;
-    this.suggestionElement = this._getElement("suggestion") as HTMLElement;
+    this.suggestionsElement = this._getElement("suggestions") as HTMLElement;
     this.emptyElement = this._getElement("empty") as HTMLElement;
 
     // Layout

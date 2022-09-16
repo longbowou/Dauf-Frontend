@@ -33,7 +33,7 @@
           <!--end::Icon-->
 
           <!--begin::Input-->
-          <input id="input-search" v-model="search" type="text" @keyup="onInputSearchKeyup"
+          <input id="input-search" v-model="verseSearch" type="text" @keyup="onInputSearchKeyup"
                  class="form-control form-control-lg general/gen004.svg px-15"
                  name="search"
                  autofocus
@@ -71,7 +71,7 @@
           <!--begin::Search results-->
           <div data-kt-search-element="results" class="d-none">
             <div class="mh-300px scroll-y me-n5 pe-5">
-              <div :onclick="() => filterOnBookSelected(book)" v-for="book in filterBooks" :key="book?.id"
+              <div :onclick="() => onFilteredBookSelected(book)" v-for="book in filteredBooks" :key="book?.id"
                    class="d-flex align-items-center p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
                    data-kt-search-element="customer">
                 <!--begin::Info-->
@@ -87,7 +87,7 @@
                    class="d-flex flex-column align-items-start p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
                    data-kt-search-element="customer">
                 <!--begin::Info-->
-                <div class="fw-semibold" :onclick="(event) => filterOnBookVerseSelected(event, verse)">
+                <div class="fw-semibold" :onclick="() => onFilteredBookVerseSelected(verse)">
                   <span class="fs-3">
                     {{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}
                   </span>
@@ -144,8 +144,8 @@
                 <!--begin::Icon-->
                 <span
                     class="svg-icon svg-icon-2 svg-icon-lg-1 svg-icon-gray-500 position-absolute top-50 ms-5 translate-middle-y">
-            <inline-svg src="media/icons/duotune/general/gen004.svg"/>
-        </span>
+                    <inline-svg src="media/icons/duotune/general/gen004.svg"/>
+                </span>
                 <!--end::Icon-->
 
                 <!--begin::Input-->
@@ -160,18 +160,18 @@
                 <!--begin::Spinner-->
                 <span class="position-absolute top-50 end-0 translate-middle-y lh-0 d-none me-5"
                       data-kt-search-element="spinner">
-            <span class="spinner-border h-15px w-15px align-middle text-gray-400"></span>
-        </span>
+                    <span class="spinner-border h-15px w-15px align-middle text-gray-400"></span>
+                </span>
                 <!--end::Spinner-->
 
                 <!--begin::Reset-->
                 <span
                     class="btn btn-flush btn-active-color-primary position-absolute top-50 end-0 translate-middle-y lh-0 me-5 d-none"
                     data-kt-search-element="clear">
-          <span class="svg-icon svg-icon-2 svg-icon-lg-1 me-0">
-              <inline-svg src="media/icons/duotune/arrows/arr061.svg"/>
-          </span>
-        </span>
+                  <span class="svg-icon svg-icon-2 svg-icon-lg-1 me-0">
+                      <inline-svg src="media/icons/duotune/arrows/arr061.svg"/>
+                  </span>
+                </span>
                 <!--end::Reset-->
               </form>
               <!--end::Form-->
@@ -187,40 +187,28 @@
                 <!--begin::Search results-->
                 <div data-kt-search-element="results" class="d-none">
                   <div class="mh-300px scroll-y me-n5 pe-5">
-                    <div :onclick="() => filterOnBookSelected(book)" v-for="book in filterBooks" :key="book?.id"
-                         class="d-flex align-items-center p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
-                         data-kt-search-element="customer">
-                      <!--begin::Info-->
-                      <div class="fw-semibold">
-                <span class="fs-6 text-gray-800" v-html="book?.name">
-                </span>
-                      </div>
-                      <!--end::Info-->
-                    </div>
-
-                    <div v-for="verse in filterBookVerses"
+                    <div v-for="verse in filteredSavedVerses"
                          :key="verse?.id"
                          class="d-flex flex-column align-items-start p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
                          data-kt-search-element="customer">
                       <!--begin::Info-->
-                      <div class="fw-semibold" :onclick="(event) => filterOnBookVerseSelected(event, verse)">
-                  <span class="fs-3">
-                    {{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}
-                  </span>
+                      <div class="fw-semibold" :onclick="() => onFilteredSavedVerseClick(verse)">
+                        <span class="fs-3">
+                          {{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}
+                        </span>
 
                         <br>
 
-                        <span class="fs-6 text-gray-800" style="text-align: justify">
-                    {{ verse?.content }}
-                  </span>
+                        <span v-if="showSavedVerseContent" class="fs-6 text-gray-800" style="text-align: justify">
+                          {{ verse?.content }}
+                        </span>
                       </div>
 
                       <div>
-                        <button v-if="!isVerseSaved(verse)" @click="saveVerse(verse)"
+                        <button @click="removeSavedVerse(verse)"
                                 class="btn btn-text-gray-500 btn-active-color-primary p-0">
-                          Save
+                          Remove
                         </button>
-                        <span v-if="isVerseSaved(verse)" class="text-primary">Saved</span>
                       </div>
                       <!--end::Info-->
                     </div>
@@ -335,11 +323,10 @@ const uqrlClient = createClient({
 })
 
 let verseSearchComponent = undefined;
-let verseSearchWrapperElement = undefined;
-let verseSearchSuggestionsElement = undefined;
-let verseSearchResultsElement = undefined;
-let verseSearchEmptyElement = undefined;
 let verseSearchInput = undefined;
+
+let savedVerseSearchComponent = undefined;
+let savedVerseSearchInput = undefined;
 
 const wordsLimitCount = 30
 
@@ -361,16 +348,17 @@ export default defineComponent({
       fetchingVerses: false,
       bibles: [],
       liveBibleSelected: undefined,
-      search: "",
+      verseSearch: "",
       searchBibleSelected: undefined,
       books: [],
       bookNames: [],
       bookSelected: undefined,
-      filterBooks: [],
+      filteredBooks: [],
       filterBookVerses: [],
       savedVerses: [],
       savedVersesSearch: "",
-      showSavedVerseContent: false
+      showSavedVerseContent: false,
+      filteredSavedVerses: [],
     }
   },
   components: {},
@@ -380,13 +368,21 @@ export default defineComponent({
 
     verseSearchInput = window.document.querySelector('#input-search');
     verseSearchInput.addEventListener('keydown', (event) => {
-      if (event.key === "Tab" && this.filterBooks.length > 0) {
+      if (event.key === "Tab" && this.filteredBooks.length > 0) {
         event.preventDefault()
-        this.filterOnBookSelected(this.filterBooks[0])
+        this.onFilteredBookSelected(this.filteredBooks[0])
       }
     })
 
     this.$nextTick(function () {
+      savedVerseSearchInput = window.document.querySelector('#saved-input-search');
+      savedVerseSearchInput.addEventListener('keydown', (event) => {
+        if (event.key === "Tab" && this.filteredSavedVerses.length > 0) {
+          event.preventDefault()
+          this.onFilteredSavedVerseClick(this.filteredSavedVerses[0])
+        }
+      })
+
       window.document.querySelector('#card-body').style.maxHeight = `${window.innerHeight * 0.81}px`
       window.document.querySelector('#saved-card-body').style.maxHeight = `${window.innerHeight * 0.651}px`
     })
@@ -433,7 +429,9 @@ export default defineComponent({
         })
 
     this.initVerseSearch();
-    this.initSavedVerseSearch();
+    this.$nextTick(function () {
+      this.initSavedVerseSearch();
+    })
 
     this.savedVerses = this.savedScriptureStore.getSavedVerses
   },
@@ -552,11 +550,6 @@ export default defineComponent({
       })
     },
     initVerseSearch() {
-      verseSearchWrapperElement = window.document.querySelector('[data-kt-search-element="wrapper"]');
-      verseSearchSuggestionsElement = window.document.querySelector('[data-kt-search-element="suggestions"]');
-      verseSearchResultsElement = window.document.querySelector('[data-kt-search-element="results"]');
-      verseSearchEmptyElement = window.document.querySelector('[data-kt-search-element="empty"]');
-
       verseSearchComponent = new SearchComponent(
           window.document.querySelector("#kt_docs_search_handler_basic"),
           defaultSearchOptions,
@@ -564,24 +557,27 @@ export default defineComponent({
       )
       verseSearchComponent.on('kt.search.clear', () => {
         // Show recently viewed
-        verseSearchSuggestionsElement.classList.remove("d-none");
+        verseSearchComponent.suggestionsElement.classList.remove("d-none");
         // Hide results
-        verseSearchResultsElement.classList.add("d-none");
+        verseSearchComponent.resultsElement.classList.add("d-none");
         // Hide empty message
-        verseSearchEmptyElement.classList.add("d-none");
+        verseSearchComponent.emptyElement.classList.add("d-none");
+
+        this.verseSearch = ''
+        this.filteredBooks = []
       })
 
       verseSearchComponent.on('kt.search.process', async () => {
-        const searchSpitted = this.search.split(" ")
-        this.filterBooks = []
+        const searchSpitted = this.verseSearch.split(" ")
+        this.filteredBooks = []
         if (searchSpitted.length <= 1) {
-          this.filterBooks = this.books
+          this.filteredBooks = this.books
               .filter((book) => {
-                return slugify(book.name.toLowerCase()).includes(this.search)
+                return slugify(book.name.toLowerCase()).includes(this.verseSearch)
               });
         }
 
-        if (this.bookNames.includes(this.search.trim())) {
+        if (this.bookNames.includes(this.verseSearch.trim())) {
           const result = await uqrlClient
               .query(`
                 {
@@ -654,9 +650,9 @@ export default defineComponent({
         }
 
         // Show results
-        verseSearchResultsElement.classList.remove("d-none");
+        verseSearchComponent.resultsElement.classList.remove("d-none");
         // Hide empty message
-        verseSearchEmptyElement.classList.add("d-none");
+        verseSearchComponent.emptyElement.classList.add("d-none");
 
         // Hide recently viewed
         // suggestionsElement.classList.add("d-none");
@@ -668,21 +664,58 @@ export default defineComponent({
         verseSearchComponent.complete();
       })
     },
-    onInputSearchKeyup(event) {
-      console.log(event.key)
+    initSavedVerseSearch() {
+      savedVerseSearchComponent = new SearchComponent(
+          window.document.querySelector("#saved_verses_search"),
+          defaultSearchOptions,
+          defaultSearchQueires
+      )
+      savedVerseSearchComponent.on('kt.search.clear', () => {
+        // Show recently viewed
+        savedVerseSearchComponent.suggestionsElement.classList.remove("d-none");
+        // Hide results
+        savedVerseSearchComponent.resultsElement.classList.add("d-none");
+        // Hide empty message
+        savedVerseSearchComponent.emptyElement.classList.add("d-none");
+
+        this.savedVersesSearch = ''
+        this.filteredSavedVerses = []
+      })
+
+      savedVerseSearchComponent.on('kt.search.process', async () => {
+        this.filterSavedVerses();
+
+        // Show results
+        savedVerseSearchComponent.resultsElement.classList.remove("d-none");
+        // Hide empty message
+        savedVerseSearchComponent.emptyElement.classList.add("d-none");
+
+        // Hide recently viewed
+        // suggestionsElement.classList.add("d-none");
+        // Hide results
+        // resultsElement.classList.add("d-none");
+        // Show empty message
+        // emptyElement.classList.remove("d-none");
+
+        savedVerseSearchComponent.complete();
+      })
     },
-    filterOnBookSelected(book) {
-      this.search = `${book.name} `
+    filterSavedVerses() {
+      this.filteredSavedVerses = this.savedVerses
+          .filter((verse) => {
+            return slugify(verse.name.toLowerCase()).includes(this.savedVersesSearch)
+          });
+    },
+    onFilteredBookSelected(book) {
+      this.verseSearch = `${book.name} `
       this.bookSelected = book
 
       // Hide recently viewed
-      verseSearchResultsElement.classList.add("d-none");
+      verseSearchComponent.resultsElement.classList.add("d-none");
       verseSearchInput.focus()
       verseSearchComponent.search()
     },
-    filterOnBookVerseSelected(event, verse) {
-      event.preventDefault()
-
+    onFilteredBookVerseSelected(verse) {
       uqrlClient
           .query(`
             {
@@ -721,7 +754,7 @@ export default defineComponent({
             }
           })
       // Hide recently viewed
-      verseSearchResultsElement.classList.add("d-none");
+      verseSearchComponent.resultsElement.classList.add("d-none");
       verseSearchInput.focus()
     },
     isVerseSaved(verse) {
@@ -747,6 +780,10 @@ export default defineComponent({
         }
       }
       this.savedScriptureStore.setSavedVerses(this.savedVerses)
+
+      if (this.filteredSavedVerses.length > 0) {
+        this.filterSavedVerses()
+      }
     },
     savedVerseClick(verse) {
       uqrlClient
@@ -786,6 +823,11 @@ export default defineComponent({
               this.scrollToVerse()
             }
           })
+    },
+    onFilteredSavedVerseClick(verse) {
+      this.savedVerseClick(verse)
+
+      savedVerseSearchComponent.resultsElement.classList.add("d-none");
     },
     prettifyVerses(verses) {
       const results = []
