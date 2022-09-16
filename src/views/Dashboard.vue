@@ -375,9 +375,17 @@ export default defineComponent({
 
     verseSearchInput = document.querySelector('#input-search');
     verseSearchInput.addEventListener('keydown', (event) => {
-      if (event.key === "Tab" && this.filteredBooks.length > 0) {
-        event.preventDefault()
-        this.onFilteredBookClick(this.filteredBooks[0])
+      if (event.key === "Tab") {
+        if (this.verseSearch.split(" ").length > 1) {
+          event.preventDefault()
+          this.onFilteredBookVerseClick(this.filterBookVerses[0])
+          return
+        }
+
+        if (this.filteredBooks.length > 0) {
+          event.preventDefault()
+          this.onFilteredBookClick(this.filteredBooks[0])
+        }
       }
     })
 
