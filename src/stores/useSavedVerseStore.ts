@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 
-export const useSavedScriptureStore = defineStore('saved-scripture', {
+export const useSavedVerseStore = defineStore('saved-verse', {
     state: () => ({
         verses: []
     }),

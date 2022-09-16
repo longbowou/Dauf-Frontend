@@ -4,16 +4,16 @@
       class="fullscreen-wrapper"
       v-bind:style="{ cursor: cursor }"
       v-on:change="onFullscreenChange">
-    <div v-if="currentVerse" class="d-flex flex-column" style="margin-left: 5%; margin-right: 5%">
-      <h1 class="text-center text-danger" style="font-size: 5.5rem">
+    <div v-if="currentVerse" class="d-flex flex-column" style="margin-left: 6%; margin-right: 6%">
+      <h1 class="text-center text-danger" style="font-size: 5rem">
         {{ currentVerse?.name }} • {{ currentVerse?.bible?.abbreviatedTitle }}
       </h1>
 
-      <p style="font-size: 5rem; text-align: justify; color: #E4E6EF" class="fw-bold" v-html="currentVerse?.content">
+      <p style="font-size: 5.6rem; text-align: justify; color: #E4E6EF" class="fw-bold" v-html="currentVerse?.content">
       </p>
 
       <div class="d-flex justify-content-evenly">
-        <div class="d-flex flex-grow-1 justify-content-end">
+        <div class="d-flex flex-grow-1 justify-content-end mt-15">
           <i class="fa-duotone fa-3x fa-book-open-cover mt-5 align-self-center"></i>
         </div>
 

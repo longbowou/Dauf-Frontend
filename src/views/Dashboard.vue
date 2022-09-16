@@ -331,7 +331,8 @@ import {createClient} from "@urql/vue";
 import {useScriptureStore} from "@/stores/useScriptureStore";
 import {defaultSearchOptions, defaultSearchQueires, SearchComponent} from "@/assets/ts/components";
 import slugify from "slugify"
-import {useSavedScriptureStore} from "@/stores/useSavedScriptureStore";
+import {useSavedVerseStore} from "@/stores/useSavedVerseStore";
+import {useLoadingStore} from "@/stores/useLoadingStore";
 
 const uqrlClient = createClient({
   url: process.env.VUE_APP_API_URL,
@@ -349,10 +350,12 @@ export default defineComponent({
   name: "dashboard-main",
   setup() {
     const scriptureStore = useScriptureStore();
-    const savedScriptureStore = useSavedScriptureStore();
+    const savedScriptureStore = useSavedVerseStore();
+    const loadingStore = useLoadingStore();
     return {
       scriptureStore,
       savedScriptureStore,
+      loadingStore,
     };
   },
   data() {
@@ -453,6 +456,7 @@ export default defineComponent({
     },
     fetchVerses(previous = false) {
       this.fetchingVerses = true
+      this.loadingStore.setIsLoading(true)
       const query = `
           query($bibleSlug: String, $chapterSlug: String, $beforeChapterSlug: String, $afterChapterSlug: String){
             verses(bibleSlug: $bibleSlug, chapterSlug: $chapterSlug, beforeChapterSlug: $beforeChapterSlug, afterChapterSlug: $afterChapterSlug) {
@@ -512,6 +516,7 @@ export default defineComponent({
             }
           }).finally(() => {
         this.fetchingVerses = false
+        this.loadingStore.setIsLoading(false)
       })
     },
     keyup(event) {
@@ -596,6 +601,7 @@ export default defineComponent({
         }
 
         if (this.bookNames.includes(this.verseSearch.trim())) {
+          this.loadingStore.setIsLoading(true)
           this.filterBookVerses = []
           const result = await uqrlClient
               .query(`
@@ -617,11 +623,13 @@ export default defineComponent({
           if (result.data && result.data.verses && result.data.verses.length > 0) {
             this.filterBookVerses = result.data.verses
           }
+          this.loadingStore.setIsLoading(false)
         }
 
         if (searchSpitted.length > 2 &&
             Number(searchSpitted[(searchSpitted.length - 2)]) &&
             Number(searchSpitted[(searchSpitted.length - 1)])) {
+          this.loadingStore.setIsLoading(true)
           this.filterBookVerses = []
           const result = await uqrlClient
               .query(`
@@ -646,8 +654,10 @@ export default defineComponent({
           if (result.data && result.data.verses && result.data.verses.length > 0) {
             this.filterBookVerses = result.data.verses
           }
+          this.loadingStore.setIsLoading(false)
         } else if (searchSpitted.length > 1 &&
             Number(searchSpitted[(searchSpitted.length - 1)])) {
+          this.loadingStore.setIsLoading(true)
           this.filterBookVerses = []
           const result = await uqrlClient
               .query(`
@@ -669,6 +679,7 @@ export default defineComponent({
           if (result.data && result.data.verses && result.data.verses.length > 0) {
             this.filterBookVerses = result.data.verses
           }
+          this.loadingStore.setIsLoading(false)
         }
 
         if (this.filteredBooks.length === 0 &&
@@ -748,6 +759,7 @@ export default defineComponent({
       verseSearchComponent.search()
     },
     onFilteredBookVerseClick(verse) {
+      this.loadingStore.setIsLoading(true)
       uqrlClient
           .query(`
             {
@@ -783,6 +795,8 @@ export default defineComponent({
               this.verseSelectedIndex = index;
               this.scriptureStore.setVerse(this.verseSelected)
               this.scrollToVerse()
+
+              this.loadingStore.setIsLoading(false)
 
               this.fetchPreviousVerses()
             }
@@ -826,6 +840,7 @@ export default defineComponent({
       this.savedScriptureStore.setSavedVerses(this.savedVerses)
     },
     onSavedVerseClick(verse) {
+      this.loadingStore.setIsLoading(true)
       uqrlClient
           .query(`
             {
@@ -861,6 +876,8 @@ export default defineComponent({
               this.verseSelectedIndex = index;
               this.scriptureStore.setVerse(this.verseSelected)
               this.scrollToVerse()
+
+              this.loadingStore.setIsLoading(false)
 
               this.fetchPreviousVerses()
             }
@@ -932,6 +949,7 @@ export default defineComponent({
     },
     liveBibleSelected(newBible, oldBible) {
       if (this.verseSelected) {
+        this.loadingStore.setIsLoading(true)
         uqrlClient
             .query(`
             {
@@ -967,6 +985,8 @@ export default defineComponent({
                 this.verseSelectedIndex = index;
                 this.scriptureStore.setVerse(this.verseSelected)
                 this.scrollToVerse()
+
+                this.loadingStore.setIsLoading(false)
               }
             })
       }
@@ -981,7 +1001,7 @@ export default defineComponent({
       if (oldVerseIndexSelected < newVerseIndexSelected &&
           newVerseIndexSelected + 10 >= this.verses.length &&
           !this.fetchingVerses) {
-        this.fetchVerses(true)
+        this.fetchVerses()
       }
     },
   }
