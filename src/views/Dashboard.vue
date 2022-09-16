@@ -33,7 +33,7 @@
           <!--end::Icon-->
 
           <!--begin::Input-->
-          <input id="input-search" v-model="verseSearch" type="text" @keyup="onInputSearchKeyup"
+          <input id="input-search" v-model="verseSearch" type="text"
                  class="form-control form-control-lg general/gen004.svg px-15"
                  name="search"
                  autofocus
@@ -71,7 +71,7 @@
           <!--begin::Search results-->
           <div data-kt-search-element="results" class="d-none">
             <div class="mh-300px scroll-y me-n5 pe-5">
-              <div :onclick="() => onFilteredBookSelected(book)" v-for="book in filteredBooks" :key="book?.id"
+              <div :onclick="() => onFilteredBookClick(book)" v-for="book in filteredBooks" :key="book?.id"
                    class="d-flex align-items-center p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
                    data-kt-search-element="customer">
                 <!--begin::Info-->
@@ -87,7 +87,7 @@
                    class="d-flex flex-column align-items-start p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
                    data-kt-search-element="customer">
                 <!--begin::Info-->
-                <div class="fw-semibold" :onclick="() => onFilteredBookVerseSelected(verse)">
+                <div class="fw-semibold" :onclick="() => onFilteredBookVerseClick(verse)">
                   <span class="fs-3">
                     {{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}
                   </span>
@@ -149,7 +149,7 @@
                 <!--end::Icon-->
 
                 <!--begin::Input-->
-                <input id="saved-input-search" v-model="savedVersesSearch" type="text"
+                <input id="input-search-save" v-model="savedVersesSearch" type="text"
                        class="form-control form-control-lg general/gen004.svg px-15"
                        name="search"
                        autofocus
@@ -242,7 +242,7 @@
               <div v-for="verse in savedVerses" :key="`saved-${verse?.id}`"
                    :class="['bg-light', 'm-1']">
                 <a :id="`saved-verse-${verse?.id}`" class="btn ps-2 pt-2 pe-2 pb-0 col-sm-12"
-                   v-on:click="savedVerseClick(verse)">
+                   v-on:click="onSavedVerseClick(verse)">
                   <div>
                     <h3>
                       <span v-if="isSavedVerseOnLive(verse)"
@@ -371,25 +371,14 @@ export default defineComponent({
     window.addEventListener('keydown', (event) => this.keydown(event))
     window.addEventListener('keyup', (event) => this.keyup(event))
 
-    verseSearchInput = window.document.querySelector('#input-search');
+    document.querySelector('#card-body').style.maxHeight = `${window.innerHeight * 0.81}px`
+
+    verseSearchInput = document.querySelector('#input-search');
     verseSearchInput.addEventListener('keydown', (event) => {
       if (event.key === "Tab" && this.filteredBooks.length > 0) {
         event.preventDefault()
-        this.onFilteredBookSelected(this.filteredBooks[0])
+        this.onFilteredBookClick(this.filteredBooks[0])
       }
-    })
-
-    this.$nextTick(function () {
-      savedVerseSearchInput = window.document.querySelector('#saved-input-search');
-      savedVerseSearchInput.addEventListener('keydown', (event) => {
-        if (event.key === "Tab" && this.filteredSavedVerses.length > 0) {
-          event.preventDefault()
-          this.onFilteredSavedVerseClick(this.filteredSavedVerses[0])
-        }
-      })
-
-      window.document.querySelector('#card-body').style.maxHeight = `${window.innerHeight * 0.81}px`
-      window.document.querySelector('#saved-card-body').style.maxHeight = `${window.innerHeight * 0.651}px`
     })
 
     uqrlClient
@@ -434,14 +423,17 @@ export default defineComponent({
         })
 
     this.initVerseSearch();
-    this.$nextTick(function () {
-      this.initSavedVerseSearch();
-    })
 
     this.savedVerses = this.savedScriptureStore.getSavedVerses
+    if (this.savedVerses.length > 0) {
+      this.updateSavedVersesCard()
+    }
   },
   methods: {
-    fetchVerses(next = false, previous = false) {
+    fetchPreviousVerses() {
+      this.fetchVerses(true)
+    },
+    fetchVerses(previous = false) {
       this.fetchingVerses = true
       const query = `
           query($bibleSlug: String, $chapterSlug: String, $beforeChapterSlug: String, $afterChapterSlug: String){
@@ -460,15 +452,18 @@ export default defineComponent({
           }
         `
       const variables = {bibleSlug: this.searchBibleSelected.slug}
-      if (next && this.verses.length > 0) {
-        variables['afterChapterSlug'] = this.verses[(this.verses.length - 1)].chapterSlug
+
+      if (previous) {
+        if (this.verses.length > 0) {
+          variables['beforeChapterSlug'] = this.verses[0].chapterSlug
+        }
+      } else {
+        if (this.verses.length > 0) {
+          variables['afterChapterSlug'] = this.verses[(this.verses.length - 1)].chapterSlug
+        }
       }
 
-      if (previous && this.verses.length > 0) {
-        variables['beforeChapterSlug'] = this.verses[0].chapterSlug
-      }
-
-      if (!next && !previous) {
+      if (this.verseSelected === undefined) {
         variables["chapterSlug"] = "genesis-1"
       }
       uqrlClient
@@ -711,7 +706,7 @@ export default defineComponent({
             return slugify(verse.name.toLowerCase()).includes(this.savedVersesSearch)
           });
     },
-    onFilteredBookSelected(book) {
+    onFilteredBookClick(book) {
       this.verseSearch = `${book.name} `
       this.bookSelected = book
 
@@ -720,7 +715,7 @@ export default defineComponent({
       verseSearchInput.focus()
       verseSearchComponent.search()
     },
-    onFilteredBookVerseSelected(verse) {
+    onFilteredBookVerseClick(verse) {
       uqrlClient
           .query(`
             {
@@ -756,6 +751,8 @@ export default defineComponent({
               this.verseSelectedIndex = index;
               this.scriptureStore.setVerse(this.verseSelected)
               this.scrollToVerse()
+
+              this.fetchPreviousVerses()
             }
           })
       // Hide recently viewed
@@ -776,6 +773,8 @@ export default defineComponent({
     saveVerse(verse) {
       this.savedVerses.push(verse)
       this.savedScriptureStore.setSavedVerses(this.savedVerses)
+
+      this.updateSavedVersesCard()
     },
     removeSavedVerse(verse) {
       for (let i = 0; i < this.savedVerses.length; i++) {
@@ -794,7 +793,7 @@ export default defineComponent({
       this.savedVerses = []
       this.savedScriptureStore.setSavedVerses(this.savedVerses)
     },
-    savedVerseClick(verse) {
+    onSavedVerseClick(verse) {
       uqrlClient
           .query(`
             {
@@ -830,11 +829,13 @@ export default defineComponent({
               this.verseSelectedIndex = index;
               this.scriptureStore.setVerse(this.verseSelected)
               this.scrollToVerse()
+
+              this.fetchPreviousVerses()
             }
           })
     },
     onFilteredSavedVerseClick(verse) {
-      this.savedVerseClick(verse)
+      this.onSavedVerseClick(verse)
 
       savedVerseSearchComponent.resultsElement.classList.add("d-none");
     },
@@ -872,6 +873,21 @@ export default defineComponent({
         }
       }
       return results
+    },
+    updateSavedVersesCard() {
+      this.$nextTick(function () {
+        document.querySelector('#saved-card-body').style.maxHeight = `${window.innerHeight * 0.651}px`
+
+        savedVerseSearchInput = document.querySelector('#input-search-save');
+        savedVerseSearchInput.addEventListener('keydown', (event) => {
+          if (event.key === "Tab" && this.filteredSavedVerses.length > 0) {
+            event.preventDefault()
+            this.onFilteredSavedVerseClick(this.filteredSavedVerses[0])
+          }
+        })
+
+        this.initSavedVerseSearch();
+      })
     }
   },
   watch: {
@@ -927,7 +943,7 @@ export default defineComponent({
       if (oldVerseIndexSelected > newVerseIndexSelected &&
           newVerseIndexSelected - 10 <= 0 &&
           !this.fetchingVerses) {
-        this.fetchVerses(false, true)
+        this.fetchPreviousVerses()
       }
 
       if (oldVerseIndexSelected < newVerseIndexSelected &&
@@ -935,7 +951,7 @@ export default defineComponent({
           !this.fetchingVerses) {
         this.fetchVerses(true)
       }
-    }
+    },
   }
 });
 </script>
