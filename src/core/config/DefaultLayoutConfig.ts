@@ -28,8 +28,8 @@ const config: LayoutConfigTypes = {
     menuIcon: "font",
     width: "fluid",
     fixed: {
-      desktop: true,
-      tabletAndMobile: true
+      desktop: false,
+      tabletAndMobile: false
     }
   },
   toolbar: {

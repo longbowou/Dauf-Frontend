@@ -3,11 +3,11 @@
       class="aside-primary d-flex flex-column align-items-lg-center flex-row-auto"
   >
     <div
-        class="aside-logo d-none d-lg-flex flex-column align-items-center flex-column-auto py-4"
+        class="aside-logo d-none d-lg-flex flex-column align-items-center flex-column-auto py-2"
         id="kt_aside_logo"
     >
       <a href="#">
-        <div class="symbol symbol-60px symbol-circle">
+        <div class="symbol symbol-40px symbol-circle">
           <div class="symbol-label fs-2 fw-bold text-dark">D</div>
         </div>
       </a>

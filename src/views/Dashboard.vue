@@ -387,8 +387,8 @@ export default defineComponent({
     })
 
     this.$nextTick(function () {
-      window.document.querySelector('#card-body').style.maxHeight = `${window.innerHeight * 0.777}px`
-      window.document.querySelector('#saved-card-body').style.maxHeight = `${window.innerHeight * 0.61}px`
+      window.document.querySelector('#card-body').style.maxHeight = `${window.innerHeight * 0.81}px`
+      window.document.querySelector('#saved-card-body').style.maxHeight = `${window.innerHeight * 0.651}px`
     })
 
     uqrlClient
