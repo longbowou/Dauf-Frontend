@@ -301,8 +301,12 @@
                 <div
                     class="pt-3 ps-3 pe-3"
                     :id="verse?.slug">
-                  <h3>{{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}</h3>
-                  <span v-html="verse?.content"></span>
+                  <h3 :class="[(verse?.selected && verseSelectedIndex === index ? 'fs-2x' : null)]">
+                    {{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}
+                  </h3>
+                  <span v-html="verse?.content"
+                        :class="[(verse?.selected && verseSelectedIndex === index ? 'fs-3' : null)]">
+                  </span>
                 </div>
                 <span v-if="verse.linkedToNext" class="svg-icon svg-icon-2 svg-icon-dark me-0 me-md-2">
                   <inline-svg src="media/icons/duotune/arrows/arr082.svg"/>

@@ -36,7 +36,7 @@
     </div>
 
     <div class="d-flex flex-grow-0 justify-content-end mb-10">
-      <i class="fa-duotone fa-3x fa-book-open-cover mt-5 align-self-center"></i>
+      <i class="fa-duotone fa-3x fa-book-open-cover mt-5 align-self-center text-dark"></i>
     </div>
   </div>
 
