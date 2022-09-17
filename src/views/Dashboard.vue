@@ -325,6 +325,31 @@
         </div>
       </div>
     </div>
+
+    <div class="modal fade" tabindex="-1" id="kt_modal_scrollable_2">
+      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Search verses</h5>
+
+            <!--begin::Close-->
+            <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+              <span class="svg-icon svg-icon-2x"></span>
+            </div>
+            <!--end::Close-->
+          </div>
+
+          <div class="modal-body">
+            <p>Long modal body text goes here.</p>
+          </div>
+
+          <div class="modal-footer p-2">
+            <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-sm btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <!--end::Dashboard-->
 </template>
@@ -393,10 +418,24 @@ export default defineComponent({
     verseSearchInput = document.querySelector('#input-search');
     verseSearchInput.addEventListener('keydown', (event) => {
       if (event.key === "Tab") {
-        if (this.verseSearch.split(" ").length > 1) {
-          event.preventDefault()
-          this.onFilteredBookVerseClick(this.filterBookVerses[0])
-          return
+        const verseSearchSplit = this.verseSearch.split(" ")
+
+        if (verseSearchSplit.length > 0) {
+          let searchContainsBookName = false
+          if (this.bookNames?.includes(verseSearchSplit[0])) {
+            searchContainsBookName = true
+          } else {
+            if (verseSearchSplit.length > 1 &&
+                this.bookNames?.includes([verseSearchSplit[0], verseSearchSplit[1]].join(" "))) {
+              searchContainsBookName = true
+            }
+          }
+
+          if (searchContainsBookName && this.filterBookVerses.length > 0) {
+            event.preventDefault()
+            this.onFilteredBookVerseClick(this.filterBookVerses[0])
+            return
+          }
         }
 
         if (this.filteredBooks.length > 0) {
@@ -459,7 +498,6 @@ export default defineComponent({
       this.fetchVerses(true)
     },
     fetchVerses(previous = false) {
-      this.fetchingVerses = true
       this.loadingStore.setIsLoading(true)
       const query = `
           query($bibleSlug: String, $chapterSlug: String, $beforeChapterSlug: String, $afterChapterSlug: String){
@@ -519,7 +557,6 @@ export default defineComponent({
               }
             }
           }).finally(() => {
-        this.fetchingVerses = false
         this.loadingStore.setIsLoading(false)
       })
     },
@@ -597,11 +634,12 @@ export default defineComponent({
       verseSearchComponent.on('kt.search.process', async () => {
         const searchSpitted = this.verseSearch.split(" ")
         this.filteredBooks = []
-        if (searchSpitted.length <= 1) {
+        if (searchSpitted.length <= 2) {
           this.filterBookVerses = []
           this.filteredBooks = this.books
               .filter((book) => {
-                return slugify(book.name.toLowerCase()).includes(this.verseSearch)
+                return slugify(book.name.toLowerCase()).includes(this.verseSearch.toLowerCase()) ||
+                    slugify(book.name.toLowerCase()).includes(slugify(this.verseSearch.toLowerCase()))
               });
         }
 
@@ -805,7 +843,9 @@ export default defineComponent({
 
               this.fetchPreviousVerses()
             }
-          })
+          }).finally(() => {
+        this.loadingStore.setIsLoading(false);
+      })
       // Hide recently viewed
       verseSearchComponent.hideResultsElement();
       verseSearchInput.focus()
@@ -886,7 +926,9 @@ export default defineComponent({
 
               this.fetchPreviousVerses()
             }
-          })
+          }).finally(() => {
+        this.loadingStore.setIsLoading(false);
+      })
     },
     onFilteredSavedVerseClick(verse) {
       this.onSavedVerseClick(verse)
@@ -993,19 +1035,19 @@ export default defineComponent({
 
                 this.loadingStore.setIsLoading(false)
               }
-            })
+            }).finally(() => {
+          this.loadingStore.setIsLoading(false);
+        })
       }
     },
     verseSelectedIndex(newVerseIndexSelected, oldVerseIndexSelected) {
       if (oldVerseIndexSelected > newVerseIndexSelected &&
-          newVerseIndexSelected - 10 <= 0 &&
-          !this.fetchingVerses) {
+          newVerseIndexSelected - 10 <= 0) {
         this.fetchPreviousVerses()
       }
 
       if (oldVerseIndexSelected < newVerseIndexSelected &&
-          newVerseIndexSelected + 10 >= this.verses.length &&
-          !this.fetchingVerses) {
+          newVerseIndexSelected + 10 >= this.verses.length) {
         this.fetchVerses()
       }
     },

@@ -330,28 +330,26 @@ class SearchComponent {
 
     // Search
     public search = () => {
-        if (!this.processing) {
-            // Show search spinner
-            if (this.spinnerElement) {
-                this.spinnerElement.classList.remove("d-none");
-            }
-
-            // Hide search clear button
-            if (this.clearElement) {
-                this.clearElement.classList.add("d-none");
-            }
-
-            // Hide search toolbar
-            if (this.toolbarElement) {
-                this.toolbarElement.classList.add("d-none");
-            }
-
-            // Focus input
-            this.inputElement.focus();
-
-            this.processing = true;
-            EventHandlerUtil.trigger(this.element, "kt.search.process", this);
+        // Show search spinner
+        if (this.spinnerElement) {
+            this.spinnerElement.classList.remove("d-none");
         }
+
+        // Hide search clear button
+        if (this.clearElement) {
+            this.clearElement.classList.add("d-none");
+        }
+
+        // Hide search toolbar
+        if (this.toolbarElement) {
+            this.toolbarElement.classList.add("d-none");
+        }
+
+        // Focus input
+        this.inputElement.focus();
+
+        this.processing = true;
+        EventHandlerUtil.trigger(this.element, "kt.search.process", this);
     };
 
     // Complete

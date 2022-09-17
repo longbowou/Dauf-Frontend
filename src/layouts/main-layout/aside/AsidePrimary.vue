@@ -40,6 +40,20 @@
               </span>
             </router-link>
           </li>
+          <li
+              class="nav-item mb-2"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              data-bs-original-title="Search"
+          >
+            <button type="button"
+                    class="nav-link btn btn-icon btn-active-color-primary btn-color-gray-400 btn-active-light"
+                    data-bs-toggle="modal" data-bs-target="#kt_modal_scrollable_2">
+              <span class="svg-icon svg-icon-2x">
+                <inline-svg src="media/icons/duotune/general/gen004.svg"/>
+              </span>
+            </button>
+          </li>
         </ul>
       </div>
     </div>
