@@ -594,6 +594,7 @@ export default defineComponent({
         const searchSpitted = this.verseSearch.split(" ")
         this.filteredBooks = []
         if (searchSpitted.length <= 1) {
+          this.filterBookVerses = []
           this.filteredBooks = this.books
               .filter((book) => {
                 return slugify(book.name.toLowerCase()).includes(this.verseSearch)
@@ -697,8 +698,8 @@ export default defineComponent({
           verseSearchComponent.hideEmptyElement();
 
           verseSearchComponent.resultsElement?.firstChild?.scrollIntoView({
-            block: "start",
-            inline: "start",
+            block: "center",
+            inline: "center",
             behavior: "auto"
           });
         }
