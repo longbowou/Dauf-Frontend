@@ -1306,7 +1306,7 @@ export default defineComponent({
       }
     },
     removeSavedVerses() {
-      if (confirm("Do you really want to delete all saved verses ?")) {
+      if (confirm("Do you really want to remove saved verses ?")) {
         this.savedVerses = []
         this.savedScriptureStore.setSavedVerses(this.savedVerses)
       }
