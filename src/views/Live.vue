@@ -11,8 +11,8 @@
         {{ currentVerse?.name }} • {{ currentVerse?.bible?.abbreviatedTitle }}
       </h1>
 
-      <p style="font-size: 5rem; text-align: justify; color: #E4E6EF"
-         class="fw-bold"
+      <p style="font-size: 5rem; text-align: justify;"
+         class="fw-bold text-white"
          v-html="currentVerse?.content">
       </p>
 

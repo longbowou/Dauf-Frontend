@@ -249,7 +249,15 @@
         <div class="card pt-0" style="background-color: transparent">
           <div id="saved-card-body" class="card-body card-scroll p-0 pe-5">
             <div class="row">
-              <div v-for="verse in savedVerses" :key="`saved-${verse?.id}`"
+              <div class="form-check form-switch form-check-custom form-check-solid mb-2">
+                <input v-model="sortSavedVerseAlphabetically" class="form-check-input h-40px w-60px ms-3 me-3"
+                       type="checkbox" value=""
+                       id="sortSavedVerseAlphabetically" checked="checked"/>
+                <label for="sortSavedVerseAlphabetically" class="fs-5 text-muted">
+                  Sort Alphabetically
+                </label>
+              </div>
+              <div v-for="verse in sortedSavedVerses()" :key="`saved-${verse?.id}`"
                    :class="['bg-light', 'm-1']">
                 <a :id="`saved-verse-${verse?.id}`" class="btn ps-2 pt-2 pe-2 pb-0 col-sm-12"
                    v-on:click="onSavedVerseClick(verse)">
@@ -443,6 +451,15 @@
             </div>
             <!--end::Main wrapper-->
 
+            <select v-model="globalSearchBookGroupSelected" id="bible-select" class="form-select mb-3 form-select-lg"
+                    aria-label="Select example"
+                    data-control="select2">
+              <option v-for="(bibleGroup, index) in bibleGroups" :key="index" :value="bibleGroup.value"
+                      :selected="bibleGroup.value === globalSearchBookGroupSelected">
+                {{ bibleGroup.name }}
+              </option>
+            </select>
+
             <!--begin::Main wrapper-->
             <div class=""
                  id="global-verses-search"
@@ -616,13 +633,29 @@ export default defineComponent({
       savedVerses: [],
       savedVersesSearch: "",
       showSavedVerseContent: false,
+      sortSavedVerseAlphabetically: true,
       filteredSavedVerses: [],
       globalSearchBibleSelected: undefined,
       globalSearchBookSelected: undefined,
       globalBookSearch: "",
       globalVerseSearch: "",
       filteredGlobalBooks: [],
-      filteredGlobalVerses: []
+      filteredGlobalVerses: [],
+      globalSearchBookGroupSelected: null,
+      bibleGroups: [
+        {
+          name: "All",
+          value: null
+        },
+        {
+          name: "Old Testament",
+          value: "OLD"
+        },
+        {
+          name: "New Testament",
+          value: "NEW"
+        },
+      ]
     }
   },
   components: {},
@@ -1045,8 +1078,8 @@ export default defineComponent({
       globalBookSearchComponent.on('kt.search.process', async () => {
         this.filteredGlobalBooks = this.books
             .filter((book) => {
-              return slugify(book.name.toLowerCase()).includes(this.verseSearch.toLowerCase()) ||
-                  slugify(book.name.toLowerCase()).includes(slugify(this.verseSearch.toLowerCase()))
+              return slugify(book.name.toLowerCase()).includes(this.globalBookSearch.toLowerCase()) ||
+                  slugify(book.name.toLowerCase()).includes(slugify(this.globalBookSearch.toLowerCase()))
             });
 
         if (this.filteredGlobalBooks.length === 0) {
@@ -1094,8 +1127,8 @@ export default defineComponent({
         this.filteredGlobalVerses = []
 
         const query = `
-          query($bibleSlug: String, $bookSlug: String, $content: String){
-            verses(bibleSlug: $bibleSlug, bookSlug: $bookSlug, content: $content, limit: 20) {
+          query($bibleSlug: String, $group: String, $bookSlug: String, $content: String){
+            verses(bibleSlug: $bibleSlug, group: $group, bookSlug: $bookSlug, content: $content, limit: 20) {
               id
               name
               content
@@ -1116,6 +1149,10 @@ export default defineComponent({
 
         if (this.globalSearchBookSelected) {
           variables['bookSlug'] = this.globalSearchBookSelected.slug
+        }
+
+        if (this.globalSearchBookGroupSelected) {
+          variables['group'] = this.globalSearchBookGroupSelected
         }
 
         const result = await uqrlClient
@@ -1157,8 +1194,18 @@ export default defineComponent({
     filterSavedVerses() {
       this.filteredSavedVerses = this.savedVerses
           .filter((verse) => {
-            return slugify(verse.name.toLowerCase()).includes(this.savedVersesSearch)
+            return slugify(verse.name.toLowerCase()).includes(this.savedVersesSearch.toLowerCase()) ||
+                slugify(verse.name.toLowerCase()).includes(slugify(this.savedVersesSearch.toLowerCase()))
           });
+      this.filteredSavedVerses.sort((a, b) => a.name.localeCompare(b.name))
+    },
+    sortedSavedVerses() {
+      if (this.sortSavedVerseAlphabetically) {
+        const savedVerses = JSON.parse(JSON.stringify(this.savedVerses))
+        savedVerses.sort((a, b) => a.name.localeCompare(b.name))
+        return savedVerses
+      }
+      return this.savedVerses
     },
     onFilteredBookClick(book) {
       this.verseSearch = `${book.name} `
