@@ -663,7 +663,7 @@ export default defineComponent({
     window.addEventListener('keydown', (event) => this.keydown(event))
     window.addEventListener('keyup', (event) => this.keyup(event))
 
-    document.querySelector('#card-body').style.maxHeight = `${window.innerHeight * 0.81}px`
+    document.querySelector('#card-body').style.maxHeight = `${window.innerHeight * 0.79}px`
 
     uqrlClient
         .query(`
@@ -1399,7 +1399,7 @@ export default defineComponent({
     },
     updateSavedVersesCard() {
       this.$nextTick(function () {
-        document.querySelector('#saved-card-body').style.maxHeight = `${window.innerHeight * 0.651}px`
+        document.querySelector('#saved-card-body').style.maxHeight = `${window.innerHeight * 0.615}px`
 
         this.initSavedVerseSearch();
       })
