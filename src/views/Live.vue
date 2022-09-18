@@ -7,18 +7,18 @@
     <div v-if="currentVerse"
          class="d-flex flex-column justify-content-center flex-grow-1"
          style="margin-left: 8%; margin-right: 8%">
-      <h1 class="text-center text-danger mt-15 mb-10" style="font-size: 5rem">
+      <h1 class="text-center text-danger mt-15 mb-10" style="font-size: 4.7rem">
         {{ currentVerse?.name }} • {{ currentVerse?.bible?.abbreviatedTitle }}
       </h1>
 
-      <p style="font-size: 5.8rem; text-align: justify; color: #E4E6EF"
+      <p style="font-size: 5rem; text-align: justify; color: #E4E6EF"
          class="fw-bold"
          v-html="currentVerse?.content">
       </p>
 
       <div class="d-flex justify-content-evenly">
         <div class="d-flex flex-grow-1 justify-content-end">
-          <span v-if="currentVerse.isPartial"
+          <span v-if="currentVerse.linkedToNext"
                 class="svg-icon svg-icon-4x svg-icon-dark">
             <inline-svg src="media/icons/duotune/arrows/arr080.svg"/>
           </span>

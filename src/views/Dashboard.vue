@@ -82,12 +82,12 @@
                 <!--end::Info-->
               </div>
 
-              <div v-for="verse in filterBookVerses"
+              <div v-for="verse in filteredVerses"
                    :key="verse?.id"
                    class="d-flex flex-column align-items-start p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
                    data-kt-search-element="customer">
                 <!--begin::Info-->
-                <div class="fw-semibold" :onclick="() => onFilteredBookVerseClick(verse)">
+                <div class="fw-semibold" :onclick="() => onFilteredVerseClick(verse)">
                   <span class="fs-3">
                     {{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}
                   </span>
@@ -327,25 +327,233 @@
     </div>
 
     <div class="modal fade" tabindex="-1" id="kt_modal_scrollable_2">
-      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Search verses</h5>
+          <div class="modal-header py-4">
+            <h5 class="modal-title">
+              Global search
+            </h5>
 
             <!--begin::Close-->
-            <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
-              <span class="svg-icon svg-icon-2x"></span>
+            <div class="btn btn-icon btn-sm btn-active-light-dark ms-2" data-bs-dismiss="modal" aria-label="Close">
+              <span class="svg-icon svg-icon-2x">
+                <inline-svg src="media/icons/duotune/general/gen040.svg"/>
+              </span>
             </div>
             <!--end::Close-->
           </div>
 
           <div class="modal-body">
-            <p>Long modal body text goes here.</p>
+            <select v-model="globalSearchBibleSelected" id="global-bible-select" class="form-select mb-3 form-select-lg"
+                    aria-label="Select example"
+                    data-control="select2">
+              <option v-for="bible in bibles" :key="bible.id" :value="bible"
+                      :selected="globalSearchBibleSelected?.id === bible.id">
+                {{ bible.name }}
+              </option>
+            </select>
+
+            <!--begin::Main wrapper-->
+            <div class=""
+                 id="global-books-search"
+                 data-kt-search-keypress="true"
+                 data-kt-search-min-length="1"
+                 data-kt-search-enter="true"
+                 data-kt-search-layout="inline">
+
+              <!--begin::Input Form-->
+              <form data-kt-search-element="form" class="w-100 position-relative mb-3" autocomplete="off">
+                <!--begin::Hidden input(Added to disable form autocomplete)-->
+                <input type="hidden"/>
+                <!--end::Hidden input-->
+
+                <!--begin::Icon-->
+                <span
+                    class="svg-icon svg-icon-2 svg-icon-lg-1 svg-icon-gray-500 position-absolute top-50 ms-5 translate-middle-y">
+            <inline-svg src="media/icons/duotune/general/gen004.svg"/>
+        </span>
+                <!--end::Icon-->
+
+                <!--begin::Input-->
+                <input id="input-search" v-model="globalBookSearch" type="text"
+                       class="form-control form-control-lg general/gen004.svg px-15"
+                       name="search"
+                       autofocus
+                       placeholder="Genèse"
+                       data-kt-search-element="input"/>
+                <!--end::Input-->
+
+                <!--begin::Spinner-->
+                <span class="position-absolute top-50 end-0 translate-middle-y lh-0 d-none me-5"
+                      data-kt-search-element="spinner">
+            <span class="spinner-border h-15px w-15px align-middle text-gray-400"></span>
+        </span>
+                <!--end::Spinner-->
+
+                <!--begin::Reset-->
+                <span
+                    class="btn btn-flush btn-active-color-primary position-absolute top-50 end-0 translate-middle-y lh-0 me-5 d-none"
+                    data-kt-search-element="clear">
+          <span class="svg-icon svg-icon-2 svg-icon-lg-1 me-0">
+              <inline-svg src="media/icons/duotune/arrows/arr061.svg"/>
+          </span>
+        </span>
+                <!--end::Reset-->
+              </form>
+              <!--end::Form-->
+
+              <!--begin::Wrapper-->
+              <div class="">
+                <!--being::Search suggestion-->
+                <div data-kt-search-element="suggestions">
+
+                </div>
+                <!--end::Suggestion wrapper-->
+
+                <!--begin::Search results-->
+                <div data-kt-search-element="results" class="d-none">
+                  <div class="scroll-y me-n5 pe-5">
+                    <div :onclick="() => onFilteredGlobalBookClick(book)" v-for="book in filteredGlobalBooks"
+                         :key="book?.id"
+                         class="d-flex align-items-center p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
+                         data-kt-search-element="customer">
+                      <!--begin::Info-->
+                      <div class="fw-semibold">
+                <span class="fs-6 text-gray-800" v-html="book?.name">
+                </span>
+                      </div>
+                      <!--end::Info-->
+                    </div>
+                  </div>
+                </div>
+                <!--end::Search results-->
+
+                <!--begin::Empty search-->
+                <div data-kt-search-element="empty" class="text-center d-none">
+                  <!--begin::Message-->
+                  <div class="fw-semibold py-0 mb-10">
+                    <div class="text-gray-600 fs-3 mb-2">No books found</div>
+                    <div class="text-gray-400 fs-6">Try to search by book name</div>
+                  </div>
+                  <!--end::Message-->
+                </div>
+                <!--end::Empty search-->
+              </div>
+              <!--end::Wrapper-->
+            </div>
+            <!--end::Main wrapper-->
+
+            <!--begin::Main wrapper-->
+            <div class=""
+                 id="global-verses-search"
+                 data-kt-search-keypress="true"
+                 data-kt-search-min-length="1"
+                 data-kt-search-enter="true"
+                 data-kt-search-layout="inline">
+
+              <!--begin::Input Form-->
+              <form data-kt-search-element="form" class="w-100 position-relative" autocomplete="off">
+                <!--begin::Hidden input(Added to disable form autocomplete)-->
+                <input type="hidden"/>
+                <!--end::Hidden input-->
+
+                <!--begin::Icon-->
+                <span
+                    class="svg-icon svg-icon-2 svg-icon-lg-1 svg-icon-gray-500 position-absolute top-50 ms-5 translate-middle-y">
+                    <inline-svg src="media/icons/duotune/general/gen004.svg"/>
+                </span>
+                <!--end::Icon-->
+
+                <!--begin::Input-->
+                <input id="input-search" v-model="globalVerseSearch" type="text"
+                       class="form-control form-control-lg general/gen004.svg px-15"
+                       name="search"
+                       autofocus
+                       placeholder="Search by verse content"
+                       data-kt-search-element="input"/>
+                <!--end::Input-->
+
+                <!--begin::Spinner-->
+                <span class="position-absolute top-50 end-0 translate-middle-y lh-0 d-none me-5"
+                      data-kt-search-element="spinner">
+            <span class="spinner-border h-15px w-15px align-middle text-gray-400"></span>
+        </span>
+                <!--end::Spinner-->
+
+                <!--begin::Reset-->
+                <span
+                    class="btn btn-flush btn-active-color-primary position-absolute top-50 end-0 translate-middle-y lh-0 me-5 d-none"
+                    data-kt-search-element="clear">
+          <span class="svg-icon svg-icon-2 svg-icon-lg-1 me-0">
+              <inline-svg src="media/icons/duotune/arrows/arr061.svg"/>
+          </span>
+        </span>
+                <!--end::Reset-->
+              </form>
+              <!--end::Form-->
+
+              <!--begin::Wrapper-->
+              <div class="">
+                <!--being::Search suggestion-->
+                <div data-kt-search-element="suggestions">
+
+                </div>
+                <!--end::Suggestion wrapper-->
+
+                <!--begin::Search results-->
+                <div data-kt-search-element="results" class="d-none">
+                  <div class="mh-500px scroll-y me-n5 pe-5 mt-3">
+                    <div v-for="verse in filteredGlobalVerses"
+                         :key="verse?.id"
+                         class="d-flex flex-column align-items-start p-3 rounded-3 border-hover border border-dashed border-gray-300 cursor-pointer mb-1"
+                         data-kt-search-element="customer">
+                      <!--begin::Info-->
+                      <div class="fw-semibold" :onclick="() => onFilteredGlobalVerseClick(verse)">
+                  <span class="fs-3">
+                    {{ verse?.name }} • {{ verse?.bible?.abbreviatedTitle }}
+                  </span>
+
+                        <br>
+
+                        <span class="fs-6 text-gray-800" style="text-align: justify">
+                    {{ verse?.content }}
+                  </span>
+                      </div>
+
+                      <div>
+                        <button v-if="!isVerseSaved(verse)" @click="saveVerse(verse)"
+                                class="btn btn-text-gray-500 btn-active-color-primary p-0">
+                          Save
+                        </button>
+                        <span v-if="isVerseSaved(verse)" class="text-primary">Saved</span>
+                      </div>
+                      <!--end::Info-->
+                    </div>
+                  </div>
+                </div>
+                <!--end::Search results-->
+
+                <!--begin::Empty search-->
+                <div data-kt-search-element="empty" class="text-center d-none">
+                  <!--begin::Message-->
+                  <div class="fw-semibold py-0 mb-10 mt-3">
+                    <div class="text-gray-600 fs-3 mb-2">No verses found</div>
+                    <div class="text-gray-400 fs-6">Try to search by book name chapter name or verse content</div>
+                  </div>
+                  <!--end::Message-->
+                </div>
+                <!--end::Empty search-->
+              </div>
+              <!--end::Wrapper-->
+            </div>
+            <!--end::Main wrapper-->
           </div>
 
           <div class="modal-footer p-2">
-            <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-sm btn-primary">Save changes</button>
+            <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">
+              Close
+            </button>
+            <!--            <button type="button" class="btn btn-sm btn-primary">Save changes</button>-->
           </div>
         </div>
       </div>
@@ -362,18 +570,21 @@ import {defaultSearchOptions, defaultSearchQueires, SearchComponent} from "@/ass
 import slugify from "slugify"
 import {useSavedVerseStore} from "@/stores/useSavedVerseStore";
 import {useLoadingStore} from "@/stores/useLoadingStore";
+import {hideModal} from "@/core/helpers/dom";
 
 const uqrlClient = createClient({
   url: process.env.VUE_APP_API_URL,
 })
 
-let verseSearchComponent = undefined;
-let verseSearchInput = undefined;
+let verseSearchComponent;
+let savedVerseSearchComponent;
 
-let savedVerseSearchComponent = undefined;
-let savedVerseSearchInput = undefined;
+let globalBookSearchComponent;
+let globalVerseSearchComponent;
 
-const wordsLimitCount = 30
+let modalElement;
+
+const wordsLimitCount = 23
 
 export default defineComponent({
   name: "dashboard-main",
@@ -401,11 +612,17 @@ export default defineComponent({
       bookNames: [],
       bookSelected: undefined,
       filteredBooks: [],
-      filterBookVerses: [],
+      filteredVerses: [],
       savedVerses: [],
       savedVersesSearch: "",
       showSavedVerseContent: false,
       filteredSavedVerses: [],
+      globalSearchBibleSelected: undefined,
+      globalSearchBookSelected: undefined,
+      globalBookSearch: "",
+      globalVerseSearch: "",
+      filteredGlobalBooks: [],
+      filteredGlobalVerses: []
     }
   },
   components: {},
@@ -414,36 +631,6 @@ export default defineComponent({
     window.addEventListener('keyup', (event) => this.keyup(event))
 
     document.querySelector('#card-body').style.maxHeight = `${window.innerHeight * 0.81}px`
-
-    verseSearchInput = document.querySelector('#input-search');
-    verseSearchInput.addEventListener('keydown', (event) => {
-      if (event.key === "Tab") {
-        const verseSearchSplit = this.verseSearch.split(" ")
-
-        if (verseSearchSplit.length > 0) {
-          let searchContainsBookName = false
-          if (this.bookNames?.includes(verseSearchSplit[0])) {
-            searchContainsBookName = true
-          } else {
-            if (verseSearchSplit.length > 1 &&
-                this.bookNames?.includes([verseSearchSplit[0], verseSearchSplit[1]].join(" "))) {
-              searchContainsBookName = true
-            }
-          }
-
-          if (searchContainsBookName && this.filterBookVerses.length > 0) {
-            event.preventDefault()
-            this.onFilteredBookVerseClick(this.filterBookVerses[0])
-            return
-          }
-        }
-
-        if (this.filteredBooks.length > 0) {
-          event.preventDefault()
-          this.onFilteredBookClick(this.filteredBooks[0])
-        }
-      }
-    })
 
     uqrlClient
         .query(`
@@ -478,6 +665,7 @@ export default defineComponent({
             for (const bible of this.bibles) {
               if (bible.slug === "lsg") {
                 this.searchBibleSelected = bible
+                this.globalSearchBibleSelected = bible
                 break
               }
             }
@@ -492,6 +680,9 @@ export default defineComponent({
     if (this.savedVerses.length > 0) {
       this.updateSavedVersesCard()
     }
+
+    this.initGlobalBookSearch()
+    this.initGlobalVerseSearch()
   },
   methods: {
     fetchPreviousVerses() {
@@ -619,6 +810,35 @@ export default defineComponent({
           defaultSearchOptions,
           defaultSearchQueires
       )
+      verseSearchComponent.inputElement
+          .addEventListener('keydown', (event) => {
+            if (event.key === "Tab") {
+              const verseSearchSplit = this.verseSearch.split(" ")
+
+              if (verseSearchSplit.length > 0) {
+                let searchContainsBookName = false
+                if (this.bookNames?.includes(verseSearchSplit[0])) {
+                  searchContainsBookName = true
+                } else {
+                  if (verseSearchSplit.length > 1 &&
+                      this.bookNames?.includes([verseSearchSplit[0], verseSearchSplit[1]].join(" "))) {
+                    searchContainsBookName = true
+                  }
+                }
+
+                if (searchContainsBookName && this.filteredVerses.length > 0) {
+                  event.preventDefault()
+                  this.onFilteredVerseClick(this.filteredVerses[0])
+                  return
+                }
+              }
+
+              if (this.filteredBooks.length > 0) {
+                event.preventDefault()
+                this.onFilteredBookClick(this.filteredBooks[0])
+              }
+            }
+          })
       verseSearchComponent.on('kt.search.clear', () => {
         // Show recently viewed
         verseSearchComponent.showSuggestionsElement();
@@ -635,7 +855,7 @@ export default defineComponent({
         const searchSpitted = this.verseSearch.split(" ")
         this.filteredBooks = []
         if (searchSpitted.length <= 2) {
-          this.filterBookVerses = []
+          this.filteredVerses = []
           this.filteredBooks = this.books
               .filter((book) => {
                 return slugify(book.name.toLowerCase()).includes(this.verseSearch.toLowerCase()) ||
@@ -645,7 +865,7 @@ export default defineComponent({
 
         if (this.bookNames.includes(this.verseSearch.trim())) {
           this.loadingStore.setIsLoading(true)
-          this.filterBookVerses = []
+          this.filteredVerses = []
           const result = await uqrlClient
               .query(`
                 {
@@ -664,7 +884,7 @@ export default defineComponent({
                 }`, {})
               .toPromise()
           if (result.data && result.data.verses && result.data.verses.length > 0) {
-            this.filterBookVerses = result.data.verses
+            this.filteredVerses = result.data.verses
           }
           this.loadingStore.setIsLoading(false)
         }
@@ -673,7 +893,7 @@ export default defineComponent({
             Number(searchSpitted[(searchSpitted.length - 2)]) &&
             Number(searchSpitted[(searchSpitted.length - 1)])) {
           this.loadingStore.setIsLoading(true)
-          this.filterBookVerses = []
+          this.filteredVerses = []
           const result = await uqrlClient
               .query(`
                 {
@@ -695,13 +915,13 @@ export default defineComponent({
                 }`, {})
               .toPromise()
           if (result.data && result.data.verses && result.data.verses.length > 0) {
-            this.filterBookVerses = result.data.verses
+            this.filteredVerses = result.data.verses
           }
           this.loadingStore.setIsLoading(false)
         } else if (searchSpitted.length > 1 &&
             Number(searchSpitted[(searchSpitted.length - 1)])) {
           this.loadingStore.setIsLoading(true)
-          this.filterBookVerses = []
+          this.filteredVerses = []
           const result = await uqrlClient
               .query(`
                 {
@@ -720,13 +940,13 @@ export default defineComponent({
                 }`, {})
               .toPromise()
           if (result.data && result.data.verses && result.data.verses.length > 0) {
-            this.filterBookVerses = result.data.verses
+            this.filteredVerses = result.data.verses
           }
           this.loadingStore.setIsLoading(false)
         }
 
         if (this.filteredBooks.length === 0 &&
-            this.filterBookVerses.length === 0) {
+            this.filteredVerses.length === 0) {
           // Show results
           verseSearchComponent.hideResultsElement();
 
@@ -755,6 +975,13 @@ export default defineComponent({
           defaultSearchOptions,
           defaultSearchQueires
       )
+      savedVerseSearchComponent.inputElement
+          .addEventListener('keydown', (event) => {
+            if (event.key === "Tab" && this.filteredSavedVerses.length > 0) {
+              event.preventDefault()
+              this.onFilteredSavedVerseClick(this.filteredSavedVerses[0])
+            }
+          })
       savedVerseSearchComponent.on('kt.search.clear', () => {
         // Show recently viewed
         savedVerseSearchComponent.showSuggestionsElement();
@@ -787,6 +1014,146 @@ export default defineComponent({
         savedVerseSearchComponent.complete();
       })
     },
+    initGlobalBookSearch() {
+      globalBookSearchComponent = new SearchComponent(
+          window.document.querySelector("#global-books-search"),
+          defaultSearchOptions,
+          defaultSearchQueires
+      )
+      globalBookSearchComponent.inputElement
+          .addEventListener('keydown', (event) => {
+            if (event.key === "Tab") {
+              if (this.filteredGlobalBooks.length > 0) {
+                event.preventDefault()
+                this.onFilteredGlobalBookClick(this.filteredGlobalBooks[0])
+              }
+            }
+          })
+      globalBookSearchComponent.on('kt.search.clear', () => {
+        // Show recently viewed
+        globalBookSearchComponent.showSuggestionsElement();
+        // Hide results
+        globalBookSearchComponent.hideResultsElement();
+        // Hide empty message
+        globalBookSearchComponent.hideEmptyElement();
+
+        this.globalBookSearch = ''
+        this.filteredGlobalBooks = []
+        this.globalSearchBookSelected = undefined
+      })
+
+      globalBookSearchComponent.on('kt.search.process', async () => {
+        this.filteredGlobalBooks = this.books
+            .filter((book) => {
+              return slugify(book.name.toLowerCase()).includes(this.verseSearch.toLowerCase()) ||
+                  slugify(book.name.toLowerCase()).includes(slugify(this.verseSearch.toLowerCase()))
+            });
+
+        if (this.filteredGlobalBooks.length === 0) {
+          // Show results
+          globalBookSearchComponent.hideResultsElement();
+
+          // Hide empty message
+          globalBookSearchComponent.showEmptyElement();
+        } else {
+          // Show results
+          globalBookSearchComponent.showResultsElement();
+
+          // Hide empty message
+          globalBookSearchComponent.hideEmptyElement();
+
+          globalBookSearchComponent.resultsElement?.firstChild?.scrollIntoView({
+            block: "center",
+            inline: "center",
+            behavior: "auto"
+          });
+        }
+
+        globalBookSearchComponent.complete();
+      })
+    },
+    initGlobalVerseSearch() {
+      globalVerseSearchComponent = new SearchComponent(
+          window.document.querySelector("#global-verses-search"),
+          defaultSearchOptions,
+          defaultSearchQueires
+      )
+      globalVerseSearchComponent.on('kt.search.clear', () => {
+        // Show recently viewed
+        globalVerseSearchComponent.showSuggestionsElement();
+        // Hide results
+        globalVerseSearchComponent.hideResultsElement();
+        // Hide empty message
+        globalVerseSearchComponent.hideEmptyElement();
+
+        this.globalVerseSearch = ''
+        this.filteredGlobalVerses = []
+      })
+
+      globalVerseSearchComponent.on('kt.search.process', async () => {
+        this.filteredGlobalVerses = []
+
+        const query = `
+          query($bibleSlug: String, $bookSlug: String, $content: String){
+            verses(bibleSlug: $bibleSlug, bookSlug: $bookSlug, content: $content, limit: 20) {
+              id
+              name
+              content
+              bible {
+                id
+                abbreviatedTitle
+              }
+              bibleSlug
+              chapterSlug
+              slug
+            }
+          }
+        `
+        const variables = {
+          bibleSlug: this.globalSearchBibleSelected.slug,
+          content: this.globalVerseSearch
+        }
+
+        if (this.globalSearchBookSelected) {
+          variables['bookSlug'] = this.globalSearchBookSelected.slug
+        }
+
+        const result = await uqrlClient
+            .query(query, variables)
+            .toPromise()
+        if (result.data && result.data.verses && result.data.verses.length > 0) {
+          this.filteredGlobalVerses = result.data.verses
+        }
+
+        if (this.filteredGlobalVerses.length === 0) {
+          // Show results
+          globalVerseSearchComponent.hideResultsElement();
+
+          // Hide empty message
+          globalVerseSearchComponent.showEmptyElement();
+        } else {
+          // Show results
+          globalVerseSearchComponent.showResultsElement();
+
+          // Hide empty message
+          globalVerseSearchComponent.hideEmptyElement();
+
+          // globalVerseSearchComponent.resultsElement
+          //     ?.firstChild?.scrollIntoView({
+          //   block: "center",
+          //   inline: "center",
+          //   behavior: "auto"
+          // });
+        }
+
+        globalVerseSearchComponent.complete();
+      })
+
+      modalElement = document.getElementById('kt_modal_scrollable_2')
+      modalElement.addEventListener('shown.bs.modal', event => {
+        globalVerseSearchComponent.inputElement.focus()
+      })
+    },
     filterSavedVerses() {
       this.filteredSavedVerses = this.savedVerses
           .filter((verse) => {
@@ -798,10 +1165,10 @@ export default defineComponent({
       this.bookSelected = book
 
       verseSearchComponent.hideResultsElement();
-      verseSearchInput.focus()
+      verseSearchComponent.inputElement.focus()
       verseSearchComponent.search()
     },
-    onFilteredBookVerseClick(verse) {
+    onFilteredVerseClick(verse) {
       this.loadingStore.setIsLoading(true)
       uqrlClient
           .query(`
@@ -848,7 +1215,18 @@ export default defineComponent({
       })
       // Hide recently viewed
       verseSearchComponent.hideResultsElement();
-      verseSearchInput.focus()
+      verseSearchComponent.inputElement.focus()
+    },
+    onFilteredGlobalBookClick(book) {
+      this.globalBookSearch = book.name
+      this.globalSearchBookSelected = book
+
+      globalBookSearchComponent.hideResultsElement();
+      globalVerseSearchComponent.inputElement.focus()
+    },
+    onFilteredGlobalVerseClick(verse) {
+      this.onFilteredVerseClick(verse)
+      hideModal(modalElement)
     },
     isVerseSaved(verse) {
       for (const savedVerse of this.savedVerses) {
@@ -944,7 +1322,7 @@ export default defineComponent({
           for (let i = 0; i < contentSplit.length; i += wordsLimitCount) {
             const slice = contentSplit.slice(i, i + wordsLimitCount);
 
-            if (i + wordsLimitCount >= contentSplit.length && slice.length <= 10) {
+            if (i + wordsLimitCount >= contentSplit.length && slice.length <= 8) {
               contents[contents.length - 1] += ` ${slice.join(" ")}`
             } else {
               contents.push(slice.join(" "))
@@ -973,14 +1351,6 @@ export default defineComponent({
     updateSavedVersesCard() {
       this.$nextTick(function () {
         document.querySelector('#saved-card-body').style.maxHeight = `${window.innerHeight * 0.651}px`
-
-        savedVerseSearchInput = document.querySelector('#input-search-save');
-        savedVerseSearchInput.addEventListener('keydown', (event) => {
-          if (event.key === "Tab" && this.filteredSavedVerses.length > 0) {
-            event.preventDefault()
-            this.onFilteredSavedVerseClick(this.filteredSavedVerses[0])
-          }
-        })
 
         this.initSavedVerseSearch();
       })

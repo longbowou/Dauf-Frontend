@@ -45,7 +45,7 @@ class SearchComponent {
     element: HTMLElement;
     contentElement: HTMLElement;
     formElement: HTMLFormElement;
-    inputElement: HTMLInputElement;
+    public inputElement: HTMLInputElement;
     spinnerElement: HTMLElement;
     clearElement: HTMLElement;
     toggleElement: HTMLElement;
