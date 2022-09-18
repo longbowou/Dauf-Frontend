@@ -644,7 +644,7 @@ export default defineComponent({
       globalSearchBookGroupSelected: null,
       bibleGroups: [
         {
-          name: "All",
+          name: "Whole Testaments",
           value: null
         },
         {
@@ -1468,6 +1468,9 @@ export default defineComponent({
         this.fetchVerses()
       }
     },
+    globalSearchBookGroupSelected(newGlobalSearchBookGroupSelected, oldGlobalSearchBookGroupSelected) {
+      globalVerseSearchComponent.search()
+    }
   }
 });
 </script>
