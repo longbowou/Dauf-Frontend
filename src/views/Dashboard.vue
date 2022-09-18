@@ -1306,8 +1306,10 @@ export default defineComponent({
       }
     },
     removeSavedVerses() {
-      this.savedVerses = []
-      this.savedScriptureStore.setSavedVerses(this.savedVerses)
+      if (confirm("Do you really want to delete all saved verses ?")) {
+        this.savedVerses = []
+        this.savedScriptureStore.setSavedVerses(this.savedVerses)
+      }
     },
     onSavedVerseClick(verse) {
       this.loadingStore.setIsLoading(true)
