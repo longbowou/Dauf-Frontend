@@ -27,3 +27,105 @@
     src: url("/fonts/Poppins/Poppins-Bold.ttf");
     font-weight: 700;
 }
+
+@font-face {
+    font-family: "Cormorant";
+    src: url("/fonts/cormorant/Cormorant-Light.ttf");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "Cormorant";
+    src: url("/fonts/cormorant/Cormorant-Light.ttf");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "Cormorant";
+    src: url("/fonts/cormorant/Cormorant-Medium.ttf");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "Cormorant";
+    src: url("/fonts/cormorant/Cormorant-SemiBold.ttf");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "Cormorant";
+    src: url("/fonts/cormorant/Cormorant-Bold.ttf");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "Inknutantiqua";
+    src: url("/fonts/inknutantiqua/InknutAntiqua-Light.ttf");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "Inknutantiqua";
+    src: url("/fonts/inknutantiqua/InknutAntiqua-Regular.ttf");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "Inknutantiqua";
+    src: url("/fonts/inknutantiqua/InknutAntiqua-Medium.ttf");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "Inknutantiqua";
+    src: url("/fonts/inknutantiqua/InknutAntiqua-SemiBold.ttf");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "Inknutantiqua";
+    src: url("/fonts/inknutantiqua/InknutAntiqua-Bold.ttf");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url("/fonts/inter/Inter-Italic[wght].ttf");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url("/fonts/inter/Inter[wght].ttf");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "Sourcesanspro";
+    src: url("/fonts/sourcesanspro/SourceSansPro-Italic.ttf");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "Sourcesanspro";
+    src: url("/fonts/sourcesanspro/SourceSansPro-Regular.ttf");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "Sourcesanspro";
+    src: url("/fonts/sourcesanspro/SourceSansPro-SemiBold.ttf");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "Sourcesanspro";
+    src: url("/fonts/sourcesanspro/SourceSansPro-Bold.ttf");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "Spacegrotesk";
+    src: url("/fonts/spacegrotesk/SpaceGrotesk[wght].ttf");
+    font-weight: 400;
+}

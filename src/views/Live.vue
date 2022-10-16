@@ -2,24 +2,24 @@
   <!--begin::Dashboard-->
   <div
       class="fullscreen-wrapper d-flex"
-      v-bind:style="{ cursor: cursor }"
+      v-bind:style="{ cursor: cursor, }"
       v-on:change="onFullscreenChange">
     <div v-if="currentVerse"
          class="d-flex flex-column justify-content-center flex-grow-1"
          style="margin-left: 8%; margin-right: 8%">
-      <h1 class="text-center text-danger mt-15 mb-10" style="font-size: 4.7rem">
+      <h1 class="text-center text-danger mt-15 mb-10 fw-bolder" style="font-size: 5rem;">
         {{ currentVerse?.name }} • {{ currentVerse?.bible?.abbreviatedTitle }}
       </h1>
 
-      <p style="font-size: 5rem; text-align: justify;"
-         class="fw-bold text-white"
+      <p style="font-size: 6.5rem; text-align: justify; color: #2F264F"
+         class="fw-bolder"
          v-html="currentVerse?.content">
       </p>
 
       <div class="d-flex justify-content-evenly">
         <div class="d-flex flex-grow-1 justify-content-end">
           <span v-if="currentVerse.linkedToNext"
-                class="svg-icon svg-icon-4x svg-icon-dark">
+                class="svg-icon svg-icon-4x svg-icon-dark" style="color: #2F264F">
             <inline-svg src="media/icons/duotune/arrows/arr080.svg"/>
           </span>
         </div>
@@ -36,7 +36,7 @@
     </div>
 
     <div class="d-flex flex-grow-0 justify-content-end mb-10">
-      <i class="fa-duotone fa-3x fa-book-open-cover mt-5 align-self-center text-dark"></i>
+      <i class="fa-duotone fa-3x fa-book-open-cover mt-5 align-self-center" style="color: #2F264F"></i>
     </div>
   </div>
 
@@ -50,12 +50,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #2F264F;
-  //background: hsla(249, 38%, 20%, 1);
-  //background: radial-gradient(circle, hsla(249, 38%, 20%, 1) 0%, hsla(0, 0%, 7%, 1) 100%);
-  //background: -moz-radial-gradient(circle, hsla(249, 38%, 20%, 1) 0%, hsla(0, 0%, 7%, 1) 100%);
-  //background: -webkit-radial-gradient(circle, hsla(249, 38%, 20%, 1) 0%, hsla(0, 0%, 7%, 1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#251F45", endColorstr="#121212", GradientType=1);
+  //background-color: #2F264F;
+  font-family: Sourcesanspro, Cormorant, Inknutantiqua, Inter, Spacegrotesk, Poppins, serif;
+  background: linear-gradient(45deg, #e8d7c0 0%, #c0d0e7 100%);
+  //background: linear-gradient(45deg, #d8865c 0%, #c0d0e7 100%);
+  //background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
+  //background-image: linear-gradient(45deg, #FBDA61 0%, #FF5ACD 100%);
 }
 </style>
 
