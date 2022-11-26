@@ -6,7 +6,7 @@
       v-on:change="onFullscreenChange">
     <div v-if="currentVerse"
          class="d-flex flex-column justify-content-center flex-grow-1"
-         style="margin-left: 8%; margin-right: 8%; padding-top: 10%">
+         style="margin-left: 8%; margin-right: 8%; padding-top: 15%">
       <p style="font-size: 5.5rem; text-align: justify; color: #2d481f"
          class="fw-bolder"
          v-html="currentVerse?.content">
