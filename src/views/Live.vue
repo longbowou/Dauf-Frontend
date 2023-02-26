@@ -6,8 +6,8 @@
       v-on:change="onFullscreenChange">
     <div v-if="currentVerse"
          class="d-flex flex-column justify-content-center flex-grow-1"
-         style="margin-left: 8%; margin-right: 8%; padding-top: 15%">
-      <p style="font-size: 5.5rem; text-align: justify; color: #2d481f"
+         style="margin-left: 8%; margin-right: 8%; padding-top: 8%">
+      <p style="font-size: 5.8rem; text-align: justify; color: #1F313E"
          class="fw-bolder"
          v-html="currentVerse?.content">
       </p>
@@ -15,7 +15,7 @@
       <div class="d-flex justify-content-evenly">
         <div class="d-flex flex-grow-1 justify-content-end">
           <span v-if="currentVerse.linkedToNext"
-                class="svg-icon svg-icon-4x svg-icon-dark" style="color: #2F264F">
+                class="svg-icon svg-icon-4x svg-icon-dark" style="color: #1F313E">
             <inline-svg src="media/icons/duotune/arrows/arr080.svg"/>
           </span>
         </div>
@@ -32,7 +32,7 @@
     </div>
 
     <div class="d-flex flex-grow-0 align-self-end justify-content-end" style="margin-right: 8%; margin-bottom: 8%">
-      <h1 class="fw-bolder" style="font-size: 3rem; color: #EE9D01;">
+      <h1 class="fw-bolder" style="font-size: 3rem; color: #D33E43;">
         {{ currentVerse?.name }} • {{ currentVerse?.bible?.abbreviatedTitle }}
       </h1>
       <!--      <i class="fa-duotone fa-3x fa-book-open-cover mt-5 align-self-center" style="color: #2F264F"></i>-->
@@ -51,12 +51,12 @@
   justify-content: center;
   //background-color: #2F264F;
   font-family: Sourcesanspro, Cormorant, Inknutantiqua, Inter, Spacegrotesk, Poppins, serif;
-  background: linear-gradient(45deg, #e8d7c0 0%, #c0d0e7 100%);
-  background-image: url("/public/backgrounds/b6.jpg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  //background: linear-gradient(45deg, #d8865c 0%, #c0d0e7 100%);
+  //background: linear-gradient(45deg, #e8d7c0 0%, #c0d0e7 100%);
+  //background-image: url("/public/backgrounds/b6.jpg");
+  //background-position: center;
+  //background-repeat: no-repeat;
+  //background-size: cover;
+  background: linear-gradient(45deg, #F9F8F5 0%, #c0d0e7 100%);
   //background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
   //background-image: linear-gradient(45deg, #FBDA61 0%, #FF5ACD 100%);
 }

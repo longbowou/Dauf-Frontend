@@ -601,7 +601,7 @@ let globalVerseSearchComponent;
 
 let modalElement;
 
-const wordsLimitCount = 2000
+const wordsLimitCount = 23
 
 export default defineComponent({
   name: "dashboard-main",
