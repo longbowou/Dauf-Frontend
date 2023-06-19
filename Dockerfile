@@ -1,6 +1,4 @@
-FROM node:16.17
-
-RUN npm i -g pnpm
+FROM node:18
 
 WORKDIR /app
 
