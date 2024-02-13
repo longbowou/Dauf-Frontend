@@ -50,7 +50,7 @@
   align-items: center;
   justify-content: center;
   //background-color: #2F264F;
-  font-family: Sourcesanspro, Cormorant, Inknutantiqua, Inter, Spacegrotesk, Poppins, serif;
+  font-family: ml, Sourcesanspro, Cormorant, Inknutantiqua, Inter, Spacegrotesk, Poppins, serif;
   //background: linear-gradient(45deg, #e8d7c0 0%, #c0d0e7 100%);
   //background-image: url("/public/backgrounds/b6.jpg");
   //background-position: center;
