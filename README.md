@@ -49,6 +49,9 @@ GraphQl - [https://app.dauf.run-on.app/graphiql](https://app.dauf.run-on.app/gra
   empowering
   developers and creators to integrate Scripture seamlessly into their own applications, websites, or projects.
 
+- **Development & Deployment**: Dauf adopts Docker containers to streamline development and deployment processes,
+  enhancing the efficiency and consistency of its backend and frontend applications.
+
 ## Architecture
 
 The application architecture is split in two different parts: app(backend) for API and frontend for scripture
