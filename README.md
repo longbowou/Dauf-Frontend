@@ -13,11 +13,11 @@ Feel free to try it out. Check the links below.
 
 ### Frontend
 
-[https://dauf.run-on.app](https://dauf.run-on.app)
+[https://dauf.danielblandes.com](https://dauf.danielblandes.com)
 
 ### App (Backend)
 
-GraphQl - [https://app.dauf.run-on.app/graphiql](https://app.dauf.run-on.app/graphiql)
+GraphQl - [https://app.dauf.danielblandes.com/graphiql](https://app.dauf.danielblandes.com/graphiql)
 
 ## Key Features
 
