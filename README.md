@@ -166,3 +166,7 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d frontend
 ### What's next ?
 
 Check the backend part on [Dauf Platform](https://gitlab.com/dauf-l/dauf-platform) repository
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
